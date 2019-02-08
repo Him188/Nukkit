@@ -30,7 +30,7 @@ import java.util.Map;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class EntityLiving extends Entity implements EntityDamageable {
+public abstract class EntityLiving extends Entity {
 
     public EntityLiving(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -89,10 +89,6 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     public boolean hasLineOfSight(Entity entity) {
         //todo
         return true;
-    }
-
-    public void collidingWith(Entity ent) { // can override (IronGolem|Bats)
-        ent.applyEntityCollision(this);
     }
 
     @Override

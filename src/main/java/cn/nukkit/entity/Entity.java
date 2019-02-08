@@ -334,6 +334,10 @@ public abstract class Entity extends Location implements Metadatable {
         return 0;
     }
 
+    public static Entity createEntity(String name, Position pos, Object... args) {
+        return createEntity(name, pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4), getDefaultNBT(pos), args);
+    }
+
     protected float getBaseOffset() {
         return 0;
     }
@@ -346,33 +350,8 @@ public abstract class Entity extends Location implements Metadatable {
         this.init(chunk, nbt);
     }
 
-    protected void initEntity() {
-        if (this.namedTag.contains("ActiveEffects")) {
-            ListTag<CompoundTag> effects = this.namedTag.getList("ActiveEffects", CompoundTag.class);
-            for (CompoundTag e : effects.getAll()) {
-                Effect effect = Effect.getEffect(e.getByte("Id"));
-                if (effect == null) {
-                    continue;
-                }
-
-                effect.setAmplifier(e.getByte("Amplifier")).setDuration(e.getInt("Duration")).setVisible(e.getBoolean("showParticles"));
-
-                this.addEffect(effect);
-            }
-        }
-
-        if (this.namedTag.contains("CustomName")) {
-            this.setNameTag(this.namedTag.getString("CustomName"));
-            if (this.namedTag.contains("CustomNameVisible")) {
-                this.setNameTagVisible(this.namedTag.getBoolean("CustomNameVisible"));
-            }
-        }
-
-        this.setDataFlag(DATA_FLAGS, DATA_FLAG_HAS_COLLISION, true);
-        this.dataProperties.putFloat(DATA_BOUNDING_BOX_HEIGHT, this.getHeight());
-        this.dataProperties.putFloat(DATA_BOUNDING_BOX_WIDTH, this.getWidth());
-    
-        this.scheduleUpdate();
+    public static Entity createEntity(int type, Position pos, Object... args) {
+        return createEntity(String.valueOf(type), pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4), getDefaultNBT(pos), args);
     }
 
     protected void init(FullChunk chunk, CompoundTag nbt) {
@@ -674,12 +653,37 @@ public abstract class Entity extends Location implements Metadatable {
         }
     }
 
-    public static Entity createEntity(String name, Position pos, Object... args) {
-        return createEntity(name, pos.getLevel().getChunk(pos.getFloorX(), pos.getFloorZ()), getDefaultNBT(pos), args);
+    public void collidingWith(Entity ent) { // can override (IronGolem|Bats)
+        ent.applyEntityCollision(this);
     }
 
-    public static Entity createEntity(int type, Position pos, Object... args) {
-        return createEntity(String.valueOf(type), pos.getLevel().getChunk(pos.getFloorX(), pos.getFloorZ()), getDefaultNBT(pos), args);
+    protected void initEntity() {
+        if (this.namedTag.contains("ActiveEffects")) {
+            ListTag<CompoundTag> effects = this.namedTag.getList("ActiveEffects", CompoundTag.class);
+            for (CompoundTag e : effects.getAll()) {
+                Effect effect = Effect.getEffect(e.getByte("Id"));
+                if (effect == null) {
+                    continue;
+                }
+
+                effect.setAmplifier(e.getByte("Amplifier")).setDuration(e.getInt("Duration")).setVisible(e.getBoolean("showParticles"));
+
+                this.addEffect(effect);
+            }
+        }
+
+        if (this.namedTag.contains("CustomName")) {
+            this.setNameTag(this.namedTag.getString("CustomName"));
+            if (this.namedTag.contains("CustomNameVisible")) {
+                this.setNameTagVisible(this.namedTag.getBoolean("CustomNameVisible"));
+            }
+        }
+
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_HAS_COLLISION, true);
+        this.dataProperties.putFloat(DATA_BOUNDING_BOX_HEIGHT, this.getHeight());
+        this.dataProperties.putFloat(DATA_BOUNDING_BOX_WIDTH, this.getWidth());
+
+        this.scheduleUpdate();
     }
 
     public static Entity createEntity(String name, FullChunk chunk, CompoundTag nbt, Object... args) {
@@ -929,7 +933,7 @@ public abstract class Entity extends Location implements Metadatable {
 
     public boolean attack(EntityDamageEvent source) {
         if (hasEffect(Effect.FIRE_RESISTANCE)
-                && (source.getCause() == DamageCause.FIRE
+            && (source.getCause() == DamageCause.FIRE
                 || source.getCause() == DamageCause.FIRE_TICK
                 || source.getCause() == DamageCause.LAVA)) {
             return false;
@@ -1893,7 +1897,7 @@ public abstract class Entity extends Location implements Metadatable {
         double radius = this.getWidth() / 2d;
 
         this.boundingBox.setBounds(pos.x - radius, pos.y, pos.z - radius, pos.x + radius, pos.y + (this.getHeight() * this.scale), pos.z
-                + radius);
+                                                                                                                                   + radius);
 
         this.checkChunks();
 
