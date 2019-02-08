@@ -37,17 +37,17 @@ public class EntityFallingBlock extends Entity {
     }
 
     @Override
-    protected float getGravity() {
+    public float getGravity() {
         return 0.04f;
     }
 
     @Override
-    protected float getDrag() {
+    public float getDrag() {
         return 0.02f;
     }
 
     @Override
-    protected float getBaseOffset() {
+    public float getBaseOffset() {
         return 0.49f;
     }
 

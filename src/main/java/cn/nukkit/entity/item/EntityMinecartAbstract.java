@@ -87,7 +87,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
     }
 
     @Override
-    protected float getDrag() {
+    public float getDrag() {
         return 0.1F;
     }
 

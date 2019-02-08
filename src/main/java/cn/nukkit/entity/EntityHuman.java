@@ -51,7 +51,7 @@ public class EntityHuman extends EntityHumanType {
     }
 
     @Override
-    protected float getBaseOffset() {
+    public float getBaseOffset() {
         return this.getEyeHeight();
     }
 

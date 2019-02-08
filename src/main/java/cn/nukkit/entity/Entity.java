@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author MagicDroidX
  */
-public abstract class Entity extends Location implements Metadatable {
+public abstract class Entity extends Location implements Metadatable, IEntity {
 
     public static final int NETWORK_ID = -1;
 
@@ -318,7 +318,7 @@ public abstract class Entity extends Location implements Metadatable {
         return 0;
     }
 
-    protected double getStepHeight() {
+    public double getStepHeight() {
         return 0;
     }
 
@@ -326,11 +326,11 @@ public abstract class Entity extends Location implements Metadatable {
         return true;
     }
 
-    protected float getGravity() {
+    public float getGravity() {
         return 0;
     }
 
-    protected float getDrag() {
+    public float getDrag() {
         return 0;
     }
 
@@ -338,7 +338,7 @@ public abstract class Entity extends Location implements Metadatable {
         return createEntity(name, pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4), getDefaultNBT(pos), args);
     }
 
-    protected float getBaseOffset() {
+    public float getBaseOffset() {
         return 0;
     }
 

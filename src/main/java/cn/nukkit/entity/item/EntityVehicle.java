@@ -63,20 +63,20 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
     /**
      * Mount or Dismounts an Entity from a/into vehicle
      *
-     * @param entity The target Entity
+     * @param rider The target Entity
      * @return {@code true} if the mounting successful
      */
     @Override
-    public boolean mountEntity(Entity entity) {
-        Objects.requireNonNull(entity, "The target of the mounting entity can't be null");
+    public boolean mountEntity(Entity rider) {
+        Objects.requireNonNull(rider, "The target of the mounting rider can't be null");
         this.PitchDelta = 0.0D;
         this.YawDelta = 0.0D;
-        // TODO: Check if its necessary to check if player is dead (So the vehicle wont think that there is entity riding).
-        // Check if the entity is riding some sort of vehicle
-        // and check if the entity is not dead yet
-        if (entity.riding != null) {
+        // TODO: Check if its necessary to check if player is dead (So the vehicle wont think that there is rider riding).
+        // Check if the rider is riding some sort of vehicle
+        // and check if the rider is not dead yet
+        if (rider.riding != null) {
             // Run the events
-            EntityVehicleExitEvent ev = new EntityVehicleExitEvent(entity, this);
+            EntityVehicleExitEvent ev = new EntityVehicleExitEvent(rider, this);
             server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
                 return false;
@@ -86,27 +86,27 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
 
             pk = new SetEntityLinkPacket();
             pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
+            pk.riding = rider.getId(); // From who?
             pk.type = TYPE_REMOVE;      // Byte for leave
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
             // Broadcast to player
-            if (entity instanceof Player) {
+            if (rider instanceof Player) {
                 pk = new SetEntityLinkPacket();
                 pk.rider = 0;               // To the place of?
-                pk.riding = entity.getId(); // From what
+                pk.riding = rider.getId(); // From what
                 pk.type = TYPE_REMOVE;      // Another byte for leave
-                ((Player) entity).dataPacket(pk);
+                ((Player) rider).dataPacket(pk);
             }
 
-            // Refurbish the entity
-            entity.riding = null;
-            entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, false);
+            // Refurbish the rider
+            rider.riding = null;
+            rider.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, false);
             linkedEntity = null;
             updateRiderPosition(0);
         } else {
             // Entity entering a vehicle
-            EntityVehicleEnterEvent ev = new EntityVehicleEnterEvent(entity, this);
+            EntityVehicleEnterEvent ev = new EntityVehicleEnterEvent(rider, this);
             server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
                 return false;
@@ -117,23 +117,23 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
 
             pk = new SetEntityLinkPacket();
             pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
+            pk.riding = rider.getId(); // From who?
             pk.type = TYPE_PASSENGER;   // Type
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
             // Broadcast to player
-            if (entity instanceof Player) {
+            if (rider instanceof Player) {
                 pk = new SetEntityLinkPacket();
                 pk.rider = 0;               // To the place of?
-                pk.riding = entity.getId(); // From what
+                pk.riding = rider.getId(); // From what
                 pk.type = TYPE_PASSENGER;   // Byte
-                ((Player) entity).dataPacket(pk);
+                ((Player) rider).dataPacket(pk);
             }
 
-            // Add variables to entity
-            entity.riding = this;
-            entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
-            linkedEntity = entity;
+            // Add variables to rider
+            rider.riding = this;
+            rider.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
+            linkedEntity = rider;
             updateRiderPosition(getMountedYOffset());
         }
         return true;

@@ -75,12 +75,12 @@ public class EntityPotion extends EntityProjectile {
     }
 
     @Override
-    protected float getGravity() {
+    public float getGravity() {
         return 0.1f;
     }
 
     @Override
-    protected float getDrag() {
+    public float getDrag() {
         return 0.01f;
     }
 

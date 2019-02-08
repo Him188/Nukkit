@@ -46,7 +46,7 @@ public class EntityMinecartHopper extends EntityMinecartAbstract {
     }
 
     @Override
-    public boolean mountEntity(Entity entity) {
+    public boolean mountEntity(Entity rider) {
         return false;
     }
 

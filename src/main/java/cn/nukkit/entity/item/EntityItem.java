@@ -63,7 +63,7 @@ public class EntityItem extends Entity {
     }
 
     @Override
-    protected float getBaseOffset() {
+    public float getBaseOffset() {
         return 0.125f;
     }
 

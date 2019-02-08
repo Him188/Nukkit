@@ -36,12 +36,12 @@ public class EntityXPOrb extends Entity {
     }
 
     @Override
-    protected float getGravity() {
+    public float getGravity() {
         return 0.04f;
     }
 
     @Override
-    protected float getDrag() {
+    public float getDrag() {
         return 0.02f;
     }
 

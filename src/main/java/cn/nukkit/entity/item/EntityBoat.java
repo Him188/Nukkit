@@ -51,12 +51,12 @@ public class EntityBoat extends EntityVehicle {
     }
 
     @Override
-    protected float getDrag() {
+    public float getDrag() {
         return 0.1f;
     }
 
     @Override
-    protected float getGravity() {
+    public float getGravity() {
         return 0.1f;
     }
 
