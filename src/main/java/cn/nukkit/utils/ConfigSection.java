@@ -89,6 +89,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key
      * @param defaultValue
+     *
      * @return
      */
     public <T> T get(String key, T defaultValue) {
@@ -125,6 +126,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is ConfigSection
      *
      * @param key
+     *
      * @return
      */
     public boolean isSection(String key) {
@@ -136,6 +138,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get config section element defined by key
      *
      * @param key
+     *
      * @return
      */
     public ConfigSection getSection(String key) {
@@ -147,17 +150,17 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
     /**
      * Get all ConfigSections in root path.
      * Example config:
-     *  a1:
-     *    b1:
-     *      c1:
-     *      c2:
-     *  a2:
-     *    b2:
-     *      c3:
-     *      c4:
-     *  a3: true
-     *  a4: "hello"
-     *  a5: 100
+     * a1:
+     * b1:
+     * c1:
+     * c2:
+     * a2:
+     * b2:
+     * c3:
+     * c4:
+     * a3: true
+     * a4: "hello"
+     * a5: 100
      * <p>
      * getSections() will return new ConfigSection, that contains sections a1 and a2 only.
      *
@@ -172,6 +175,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get sections (and only sections) from provided path
      *
      * @param key - config section path, if null or empty root path will used.
+     *
      * @return
      */
     public ConfigSection getSections(String key) {
@@ -189,6 +193,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get int value of config section element
      *
      * @param key - key (inside) current section (default value equals to 0)
+     *
      * @return
      */
     public int getInt(String key) {
@@ -200,6 +205,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key          - key (inside) current section
      * @param defaultValue - default value that will returned if section element is not exists
+     *
      * @return
      */
     public int getInt(String key, int defaultValue) {
@@ -210,6 +216,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is Integer
      *
      * @param key
+     *
      * @return
      */
     public boolean isInt(String key) {
@@ -221,6 +228,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get long value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public long getLong(String key) {
@@ -232,6 +240,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key          - key (inside) current section
      * @param defaultValue - default value that will returned if section element is not exists
+     *
      * @return
      */
     public long getLong(String key, long defaultValue) {
@@ -242,6 +251,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is Long
      *
      * @param key
+     *
      * @return
      */
     public boolean isLong(String key) {
@@ -253,10 +263,19 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get double value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public double getDouble(String key) {
         return this.getDouble(key, 0);
+    }
+
+    public float getFloat(String key) {
+        return this.getFloat(key, 0);
+    }
+
+    public float getFloat(String key, float defaultValue) {
+        return this.get(key, ((Number) defaultValue)).floatValue();
     }
 
     /**
@@ -264,6 +283,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key          - key (inside) current section
      * @param defaultValue - default value that will returned if section element is not exists
+     *
      * @return
      */
     public double getDouble(String key, double defaultValue) {
@@ -274,6 +294,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is Double
      *
      * @param key
+     *
      * @return
      */
     public boolean isDouble(String key) {
@@ -285,6 +306,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get String value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public String getString(String key) {
@@ -296,6 +318,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key          - key (inside) current section
      * @param defaultValue - default value that will returned if section element is not exists
+     *
      * @return
      */
     public String getString(String key, String defaultValue) {
@@ -307,6 +330,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is String
      *
      * @param key
+     *
      * @return
      */
     public boolean isString(String key) {
@@ -318,6 +342,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get boolean value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public boolean getBoolean(String key) {
@@ -329,6 +354,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key          - key (inside) current section
      * @param defaultValue - default value that will returned if section element is not exists
+     *
      * @return
      */
     public boolean getBoolean(String key, boolean defaultValue) {
@@ -339,6 +365,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is Integer
      *
      * @param key
+     *
      * @return
      */
     public boolean isBoolean(String key) {
@@ -350,6 +377,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List getList(String key) {
@@ -361,6 +389,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key         - key (inside) current section
      * @param defaultList - default value that will returned if section element is not exists
+     *
      * @return
      */
     public List getList(String key, List defaultList) {
@@ -371,6 +400,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check type of section element defined by key. Return true this element is List
      *
      * @param key
+     *
      * @return
      */
     public boolean isList(String key) {
@@ -382,6 +412,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get String List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<String> getStringList(String key) {
@@ -402,6 +433,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Integer List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Integer> getIntegerList(String key) {
@@ -433,6 +465,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Boolean List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Boolean> getBooleanList(String key) {
@@ -459,6 +492,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Double List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Double> getDoubleList(String key) {
@@ -489,6 +523,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Float List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Float> getFloatList(String key) {
@@ -519,6 +554,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Long List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Long> getLongList(String key) {
@@ -549,6 +585,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Byte List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Byte> getByteList(String key) {
@@ -583,6 +620,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Character List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Character> getCharacterList(String key) {
@@ -615,6 +653,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Short List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Short> getShortList(String key) {
@@ -649,6 +688,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get Map List value of config section element
      *
      * @param key - key (inside) current section
+     *
      * @return
      */
     public List<Map> getMapList(String key) {
@@ -673,6 +713,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      *
      * @param key
      * @param ignoreCase
+     *
      * @return
      */
     public boolean exists(String key, boolean ignoreCase) {
@@ -688,6 +729,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Check existence of config section element
      *
      * @param key
+     *
      * @return
      */
     public boolean exists(String key) {
@@ -715,6 +757,7 @@ public class ConfigSection extends LinkedHashMap<String, Object> {
      * Get all keys
      *
      * @param child - true = include child keys
+     *
      * @return
      */
     public Set<String> getKeys(boolean child) {

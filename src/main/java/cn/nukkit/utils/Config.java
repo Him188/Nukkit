@@ -314,6 +314,14 @@ public class Config {
         return this.correct ? this.config.getDouble(key, defaultValue) : defaultValue;
     }
 
+    public float getFloat(String key) {
+        return this.getFloat(key, 0);
+    }
+
+    public float getFloat(String key, float defaultValue) {
+        return this.correct ? this.config.getFloat(key, defaultValue) : defaultValue;
+    }
+
     public boolean isDouble(String key) {
         return config.isDouble(key);
     }
