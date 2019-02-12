@@ -310,6 +310,16 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
         return this.getHeight() / 2 + 0.1f;
     }
 
+    /**
+     * AI 寻路时允许实体摔落的最大高度, 这一般是实体掉下来不摔血的安全高度
+     *
+     * @return 掉下来不摔血的安全高度
+     */
+    @Override
+    public float getSafeFallHeight() {
+        return 5; // TODO: 2019/2/11 0011 我也不知道是不是这个值
+    }
+
     public float getWidth() {
         return 0;
     }
@@ -332,6 +342,14 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
 
     public float getDrag() {
         return 0;
+    }
+
+    public Entity getRiding() {
+        return riding;
+    }
+
+    public void setRiding(Entity riding) {
+        this.riding = riding;
     }
 
     public static Entity createEntity(String name, Position pos, Object... args) {

@@ -19,15 +19,34 @@ public interface ChunkLoader {
 
     double getZ();
 
+    /**
+     * 保持加载除当前对象所在的 chunk 外, 还要额外保持加载的 chunk 范围半径.
+     *
+     * @return 保持加载除当前对象所在的 chunk 外, 还要额外保持加载的 chunk 范围半径.
+     */
+    default int getKeepChunkLoadRange() {
+        return 0;
+    }
+
     Level getLevel();
 
-    void onChunkChanged(FullChunk chunk);
+    default void onChunkChanged(FullChunk chunk) {
 
-    void onChunkLoaded(FullChunk chunk);
+    }
 
-    void onChunkUnloaded(FullChunk chunk);
+    default void onChunkLoaded(FullChunk chunk) {
 
-    void onChunkPopulated(FullChunk chunk);
+    }
 
-    void onBlockChanged(Vector3 block);
+    default void onChunkUnloaded(FullChunk chunk) {
+
+    }
+
+    default void onChunkPopulated(FullChunk chunk) {
+
+    }
+
+    default void onBlockChanged(Vector3 block) {
+
+    }
 }

@@ -9,15 +9,15 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityRegainHealthEvent;
 import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector2;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.metadata.MetadataValue;
-import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 
@@ -28,12 +28,22 @@ import java.util.Map;
  * 映射 Entity 中的方法
  *
  * @author Him188moe @ NukkitX Project
+ * @author zip @ NukkitX Project
  */
-public interface IEntity {
+public interface IEntity extends Metadatable {
+    double getX();
+
+    double getY();
+
+    double getZ();
+
+    Level getLevel();
 
     float getHeight();
 
     float getEyeHeight();
+
+    float getSafeFallHeight();
 
     float getWidth();
 
@@ -48,6 +58,10 @@ public interface IEntity {
     float getGravity();
 
     float getDrag();
+
+    Entity getRiding();
+
+    void setRiding(Entity riding);
 
     boolean hasCustomName();
 

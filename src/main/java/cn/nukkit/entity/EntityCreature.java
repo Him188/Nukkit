@@ -7,7 +7,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class EntityCreature extends EntityLiving implements EntityInteractable {
+public abstract class EntityCreature extends EntityLiving implements EntityInteractable, IEntityCreature {
     public EntityCreature(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }

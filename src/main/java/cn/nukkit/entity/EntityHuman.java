@@ -17,7 +17,7 @@ import java.util.UUID;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class EntityHuman extends EntityHumanType {
+public class EntityHuman extends EntityHumanType implements EntityJumpable {
 
     public static final int DATA_PLAYER_FLAG_SLEEP = 1;
     public static final int DATA_PLAYER_FLAG_DEAD = 2;
@@ -48,6 +48,11 @@ public class EntityHuman extends EntityHumanType {
     @Override
     public float getEyeHeight() {
         return 1.62f;
+    }
+
+    @Override
+    public float getJumpHeight() {
+        return 1;
     }
 
     @Override

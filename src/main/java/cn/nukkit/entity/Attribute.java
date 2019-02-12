@@ -83,6 +83,7 @@ public class Attribute implements Cloneable {
 
     /**
      * @param name name
+     *
      * @return null|Attribute
      */
     public static Attribute getAttributeByName(String name) {

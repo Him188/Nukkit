@@ -6,7 +6,7 @@ import cn.nukkit.Player;
  * Author: BeYkeRYkt
  * Nukkit Project
  */
-public interface EntityOwnable {
+public interface EntityOwnable extends IEntity {
     String getOwnerName();
 
     void setOwnerName(String playerName);

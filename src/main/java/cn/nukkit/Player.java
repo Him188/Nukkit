@@ -283,6 +283,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     /**
      * This might disappear in the future.
      * Please use getUniqueId() instead (IP + clientId + name combo, in the future it'll change to real UUID for online auth)
+     *
      * @return random client id
      */
     @Deprecated
@@ -436,6 +437,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (player.isOnline()) {
             player.spawnTo(this);
         }
+    }
+
+    @Override
+    public int getKeepChunkLoadRange() {
+        return 3;
     }
 
     @Override
@@ -950,43 +956,43 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 if (distanceSqr > radiusSqr) continue;
 
                 /* Top right quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ + z)) != Boolean.TRUE) {
+                if (this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ + z)) != Boolean.TRUE) {
                     this.loadQueue.put(index, Boolean.TRUE);
                 }
                 lastChunk.remove(index);
                 /* Top left quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ + z)) != Boolean.TRUE) {
+                if (this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ + z)) != Boolean.TRUE) {
                     this.loadQueue.put(index, Boolean.TRUE);
                 }
                 lastChunk.remove(index);
                 /* Bottom right quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ - z - 1)) != Boolean.TRUE) {
+                if (this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ - z - 1)) != Boolean.TRUE) {
                     this.loadQueue.put(index, Boolean.TRUE);
                 }
                 lastChunk.remove(index);
                 /* Bottom left quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ - z - 1)) != Boolean.TRUE) {
+                if (this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ - z - 1)) != Boolean.TRUE) {
                     this.loadQueue.put(index, Boolean.TRUE);
                 }
                 lastChunk.remove(index);
-                if(x != z){
+                if (x != z) {
                     /* Top right quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ + x)) != Boolean.TRUE) {
+                    if (this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ + x)) != Boolean.TRUE) {
                         this.loadQueue.put(index, Boolean.TRUE);
                     }
                     lastChunk.remove(index);
                     /* Top left quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ + x)) != Boolean.TRUE) {
+                    if (this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ + x)) != Boolean.TRUE) {
                         this.loadQueue.put(index, Boolean.TRUE);
                     }
                     lastChunk.remove(index);
                     /* Bottom right quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ - x - 1)) != Boolean.TRUE) {
+                    if (this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ - x - 1)) != Boolean.TRUE) {
                         this.loadQueue.put(index, Boolean.TRUE);
                     }
                     lastChunk.remove(index);
                     /* Bottom left quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ - x - 1)) != Boolean.TRUE) {
+                    if (this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ - x - 1)) != Boolean.TRUE) {
                         this.loadQueue.put(index, Boolean.TRUE);
                     }
                     lastChunk.remove(index);
@@ -1036,7 +1042,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * 0 is true
      * -1 is false
      * other is identifer
+     *
      * @param packet packet to send
+     *
      * @return packet successfully sent
      */
     public boolean dataPacket(DataPacket packet) {
@@ -1069,7 +1077,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * 0 is true
      * -1 is false
      * other is identifer
+     *
      * @param packet packet to send
+     *
      * @return packet successfully sent
      */
     public boolean directDataPacket(DataPacket packet) {
@@ -1784,8 +1794,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     private EntityInteractable getEntityAtPosition(Entity[] nearbyEntities, int x, int y, int z) {
         for (Entity nearestEntity : nearbyEntities) {
             if (nearestEntity.getFloorX() == x && nearestEntity.getFloorY() == y && nearestEntity.getFloorZ() == z
-                    && nearestEntity instanceof EntityInteractable
-                    && ((EntityInteractable) nearestEntity).canDoInteraction()) {
+                && nearestEntity instanceof EntityInteractable
+                && ((EntityInteractable) nearestEntity).canDoInteraction()) {
                 return (EntityInteractable) nearestEntity;
             }
         }
@@ -2107,10 +2117,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     for (int i = 0; i < len && valid; i++) {
                         char c = loginPacket.username.charAt(i);
                         if ((c >= 'a' && c <= 'z') ||
-                                (c >= 'A' && c <= 'Z') ||
-                                (c >= '0' && c <= '9') ||
-                                c == '_' || c == ' '
-                                ) {
+                            (c >= 'A' && c <= 'Z') ||
+                            (c >= '0' && c <= '9') ||
+                            c == '_' || c == ' '
+                        ) {
                             continue;
                         }
 
@@ -3210,7 +3220,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     /**
      * Sends a chat message as this player. If the message begins with a / (forward-slash) it will be treated
      * as a command.
+     *
      * @param message message to send
+     *
      * @return successful
      */
     public boolean chat(String message) {
@@ -3847,7 +3859,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.z = (float) pos.z;
 
         //this is a dirty hack to prevent dying in a different level than the respawn point from breaking everything
-        if (this.level != pos.level)   {
+        if (this.level != pos.level) {
             this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
             this.teleport(new Location(pos.x, pos.y, pos.z, pos.level), null);
         }
@@ -3986,9 +3998,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         if (this.isCreative()
-                && source.getCause() != DamageCause.SUICIDE
-                && source.getCause() != DamageCause.VOID
-                ) {
+            && source.getCause() != DamageCause.SUICIDE
+            && source.getCause() != DamageCause.VOID
+        ) {
             //source.setCancelled();
             return false;
         } else if (this.getAdventureSettings().get(Type.ALLOW_FLIGHT) && source.getCause() == DamageCause.FALL) {
@@ -4029,6 +4041,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * Drops an item on the ground in front of the player. Returns if the item drop was successful.
      *
      * @param item to drop
+     *
      * @return bool if the item was dropped or if the item was null
      */
     public boolean dropItem(Item item) {
@@ -4258,6 +4271,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * You can find out FormWindow result by listening to PlayerFormRespondedEvent
      *
      * @param window to show
+     *
      * @return form id to use in {@link PlayerFormRespondedEvent}
      */
     public int showFormWindow(FormWindow window) {
@@ -4269,7 +4283,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * You can find out FormWindow result by listening to PlayerFormRespondedEvent
      *
      * @param window to show
-     * @param id form id
+     * @param id     form id
+     *
      * @return form id to use in {@link PlayerFormRespondedEvent}
      */
     public int showFormWindow(FormWindow window, int id) {
@@ -4287,6 +4302,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * You can find out settings result by listening to PlayerFormRespondedEvent
      *
      * @param window to show on settings page
+     *
      * @return form id to use in {@link PlayerFormRespondedEvent}
      */
     public int addServerSettings(FormWindow window) {
@@ -4298,6 +4314,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * You can find out settings result by listening to PlayerFormRespondedEvent
      *
      * @param window to show on settings page
+     *
      * @return form id to use in {@link PlayerFormRespondedEvent}
      */
     public int addServerSettings(FormWindow window, int id) {
@@ -4783,11 +4800,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 //Mending
                 ArrayList<Integer> itemsWithMending = new ArrayList<>();
                 for (int i = 0; i < 4; i++) {
-                    if (inventory.getArmorItem(i).getEnchantment((short)Enchantment.ID_MENDING) != null) {
+                    if (inventory.getArmorItem(i).getEnchantment((short) Enchantment.ID_MENDING) != null) {
                         itemsWithMending.add(inventory.getSize() + i);
                     }
                 }
-                if (inventory.getItemInHand().getEnchantment((short)Enchantment.ID_MENDING) != null) {
+                if (inventory.getItemInHand().getEnchantment((short) Enchantment.ID_MENDING) != null) {
                     itemsWithMending.add(inventory.getHeldItemIndex());
                 }
                 if (itemsWithMending.size() > 0) {

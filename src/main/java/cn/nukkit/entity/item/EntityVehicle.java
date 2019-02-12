@@ -1,20 +1,11 @@
 package cn.nukkit.entity.item;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityInteractable;
 import cn.nukkit.entity.EntityRideable;
 import cn.nukkit.entity.data.IntEntityData;
-import cn.nukkit.event.entity.EntityVehicleEnterEvent;
-import cn.nukkit.event.entity.EntityVehicleExitEvent;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.SetEntityLinkPacket;
-
-import java.util.Objects;
-
-import static cn.nukkit.network.protocol.SetEntityLinkPacket.*;
 
 /**
  * author: MagicDroidX
@@ -58,85 +49,6 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
     @Override
     public boolean canDoInteraction() {
         return linkedEntity == null;
-    }
-
-    /**
-     * Mount or Dismounts an Entity from a/into vehicle
-     *
-     * @param rider The target Entity
-     * @return {@code true} if the mounting successful
-     */
-    @Override
-    public boolean mountEntity(Entity rider) {
-        Objects.requireNonNull(rider, "The target of the mounting rider can't be null");
-        this.PitchDelta = 0.0D;
-        this.YawDelta = 0.0D;
-        // TODO: Check if its necessary to check if player is dead (So the vehicle wont think that there is rider riding).
-        // Check if the rider is riding some sort of vehicle
-        // and check if the rider is not dead yet
-        if (rider.riding != null) {
-            // Run the events
-            EntityVehicleExitEvent ev = new EntityVehicleExitEvent(rider, this);
-            server.getPluginManager().callEvent(ev);
-            if (ev.isCancelled()) {
-                return false;
-            }
-            // New Packet
-            SetEntityLinkPacket pk;
-
-            pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = rider.getId(); // From who?
-            pk.type = TYPE_REMOVE;      // Byte for leave
-            Server.broadcastPacket(this.hasSpawned.values(), pk);
-
-            // Broadcast to player
-            if (rider instanceof Player) {
-                pk = new SetEntityLinkPacket();
-                pk.rider = 0;               // To the place of?
-                pk.riding = rider.getId(); // From what
-                pk.type = TYPE_REMOVE;      // Another byte for leave
-                ((Player) rider).dataPacket(pk);
-            }
-
-            // Refurbish the rider
-            rider.riding = null;
-            rider.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, false);
-            linkedEntity = null;
-            updateRiderPosition(0);
-        } else {
-            // Entity entering a vehicle
-            EntityVehicleEnterEvent ev = new EntityVehicleEnterEvent(rider, this);
-            server.getPluginManager().callEvent(ev);
-            if (ev.isCancelled()) {
-                return false;
-            }
-
-            // New Packet
-            SetEntityLinkPacket pk;
-
-            pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = rider.getId(); // From who?
-            pk.type = TYPE_PASSENGER;   // Type
-            Server.broadcastPacket(this.hasSpawned.values(), pk);
-
-            // Broadcast to player
-            if (rider instanceof Player) {
-                pk = new SetEntityLinkPacket();
-                pk.rider = 0;               // To the place of?
-                pk.riding = rider.getId(); // From what
-                pk.type = TYPE_PASSENGER;   // Byte
-                ((Player) rider).dataPacket(pk);
-            }
-
-            // Add variables to rider
-            rider.riding = this;
-            rider.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
-            linkedEntity = rider;
-            updateRiderPosition(getMountedYOffset());
-        }
-        return true;
     }
 
     @Override
