@@ -1024,6 +1024,7 @@ public class Server {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 if (this.logger != null) {
                     this.logger.critical(this.getLanguage().translateString("nukkit.level.tickError"), e);
                 }
@@ -1033,7 +1034,6 @@ public class Server {
 
     public void doAutoSave() {
         if (this.getAutoSave()) {
-            Timings.levelSaveTimer.startTiming();
             for (Player player : new ArrayList<>(this.players.values())) {
                 if (player.isOnline()) {
                     player.save(true);
@@ -1045,7 +1045,6 @@ public class Server {
             for (Level level : this.levelArray) {
                 level.save();
             }
-            Timings.levelSaveTimer.stopTiming();
         }
     }
 

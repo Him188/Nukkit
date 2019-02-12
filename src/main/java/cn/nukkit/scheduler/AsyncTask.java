@@ -82,6 +82,7 @@ public abstract class AsyncTask implements Runnable {
             try {
                 task.onCompletion(Server.getInstance());
             } catch (Exception e) {
+                e.printStackTrace();
                 Server.getInstance().getLogger().critical("Exception while async task "
                         + task.getTaskId()
                         + " invoking onCompletion", e);
