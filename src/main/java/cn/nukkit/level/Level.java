@@ -1335,6 +1335,55 @@ public class Level implements ChunkManager, Metadatable {
         return collides.toArray(new Block[0]);
     }
 
+    public Block[] getCollisionBlocksThin(AxisAlignedBB bb) {
+        return this.getCollisionBlocksThin(bb, false);
+    }
+
+    /**
+     * 获取与 bb 碰撞的方块, 不包括边界接触.
+     *
+     * @param bb          bb
+     * @param targetFirst 是否查找到第一个就中断
+     *
+     * @return 与 bb 碰撞的方块
+     */
+    public Block[] getCollisionBlocksThin(AxisAlignedBB bb, boolean targetFirst) {
+        int minX = NukkitMath.floorDouble(bb.getMinX());
+        int minY = NukkitMath.floorDouble(bb.getMinY());
+        int minZ = NukkitMath.floorDouble(bb.getMinZ());
+        int maxX = NukkitMath.ceilDouble(bb.getMaxX());
+        int maxY = NukkitMath.ceilDouble(bb.getMaxY());
+        int maxZ = NukkitMath.ceilDouble(bb.getMaxZ());
+
+        List<Block> collides = new ArrayList<>();
+
+        if (targetFirst) {
+            for (int z = minZ + 1; z < maxZ; ++z) {
+                for (int x = minX + 1; x < maxX; ++x) {
+                    for (int y = minY + 1; y < maxY; ++y) {
+                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z));
+                        if (block.getId() != 0 && block.collidesWithBB(bb)) {
+                            return new Block[]{block};
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int z = minZ + 1; z < maxZ; ++z) {
+                for (int x = minX + 1; x < maxX; ++x) {
+                    for (int y = minY + 1; y < maxY; ++y) {
+                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z));
+                        if (block.getId() != 0 && block.collidesWithBB(bb)) {
+                            collides.add(block);
+                        }
+                    }
+                }
+            }
+        }
+
+        return collides.toArray(new Block[0]);
+    }
+
     public boolean isFullBlock(Vector3 pos) {
         AxisAlignedBB bb;
         if (pos instanceof Block) {
@@ -2664,7 +2713,7 @@ public class Level implements ChunkManager, Metadatable {
 
     public boolean isChunkInUse(int x, int z) {
         long hash = Level.chunkHash(x, z);
-        return  this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty() && !this.hasPlayerNearByChunk(x, z);
+        return this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty() && !this.hasPlayerNearByChunk(x, z);
     }
 
     public boolean isChunkInUse(long hash) {
@@ -2684,7 +2733,7 @@ public class Level implements ChunkManager, Metadatable {
                     if (keep.get()) {
                         return;
                     }
-                    if (Math.abs(player.chunk.getX() - x) + Math.abs(player.chunk.getZ() - z) <= player.getKeepChunkLoadRange()) {
+                    if (player != null && player.chunk != null && Math.abs(player.chunk.getX() - x) + Math.abs(player.chunk.getZ() - z) <= player.getKeepChunkLoadRange()) {
                         keep.set(true);
                     }
                 });
@@ -2725,7 +2774,7 @@ public class Level implements ChunkManager, Metadatable {
 
         if (!chunk.isLightPopulated() && chunk.isPopulated()
             && this.getServer().getConfig("chunk-ticking.light-updates", false)) {
-            this.getServer().getScheduler().scheduleAsyncTask( new LightPopulationTask(this, chunk));
+            this.getServer().getScheduler().scheduleAsyncTask(new LightPopulationTask(this, chunk));
         }
 
         if (this.isChunkInUse(index)) {

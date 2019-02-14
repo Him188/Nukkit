@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.level.ChunkLoader;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.FullChunk;
@@ -413,7 +414,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         }
         if (safe) {
             for (Entity entity : this.getEntities().values()) {
-                if (entity instanceof Player) {
+                if (entity instanceof ChunkLoader && ((ChunkLoader) entity).isLoaderActive()) {
                     return false;
                 }
             }

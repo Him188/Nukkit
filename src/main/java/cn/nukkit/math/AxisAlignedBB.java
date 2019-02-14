@@ -38,6 +38,26 @@ public interface AxisAlignedBB extends Cloneable {
         return new SimpleAxisAlignedBB(this.getMinX() - x, this.getMinY() - y, this.getMinZ() - z, this.getMaxX() + x, this.getMaxY() + y, this.getMaxZ() + z);
     }
 
+    default AxisAlignedBB floorBB(){
+        this.setMinX(Math.floor(this.getMinX()));
+        this.setMinY(Math.floor(this.getMinY()));
+        this.setMinZ(Math.floor(this.getMinZ()));
+        this.setMaxX(Math.floor(this.getMaxX()));
+        this.setMaxY(Math.floor(this.getMaxY()));
+        this.setMaxZ(Math.floor(this.getMaxZ()));
+        return this;
+    }
+
+    default AxisAlignedBB roundBB(){
+        this.setMinX(Math.round(this.getMinX()));
+        this.setMinY(Math.round(this.getMinY()));
+        this.setMinZ(Math.round(this.getMinZ()));
+        this.setMaxX(Math.round(this.getMaxX()));
+        this.setMaxY(Math.round(this.getMaxY()));
+        this.setMaxZ(Math.round(this.getMaxZ()));
+        return this;
+    }
+
     default AxisAlignedBB expand(double x, double y, double z)
 
     {

@@ -32,9 +32,9 @@ import cn.nukkit.utils.ChunkException;
 import cn.nukkit.utils.MainLogger;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
-import co.aikar.timings.TimingsHistory;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -276,6 +276,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
     public int maxFireTicks;
     public int fireTicks = 0;
     public int inPortalTicks = 0;
+    private int inVoidTicks;
 
     public float scale = 1;
 
@@ -731,6 +732,11 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
                     continue;
                 }
 
+                if (constructor.getParameters()[0].getType() != FullChunk.class
+                    || constructor.getParameters()[1].getType() != CompoundTag.class){
+                    continue;
+                }
+
                 try {
                     if (args == null || args.length == 0) {
                         entity = (Entity) constructor.newInstance(chunk, nbt);
@@ -745,8 +751,8 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
                     }
                 } catch (Exception e) {
                     MainLogger.getLogger().logException(e);
+                    //MainLogger.getLogger().log(LogLevel.ERROR, "此时的NBT数据: " + nbt.toString());
                 }
-
             }
         }
 
@@ -1143,7 +1149,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
     }
 
     public boolean entityBaseTick(int tickDiff) {
-        Timings.entityBaseTickTimer.startTiming();
 
         if (!this.isPlayer) {
             this.blocksAround = null;
@@ -1157,7 +1162,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
             if (!this.isPlayer) {
                 this.close();
             }
-            Timings.entityBaseTickTimer.stopTiming();
             return false;
         }
         if (riding != null && !riding.isAlive() && riding instanceof EntityRideable) {
@@ -1186,8 +1190,10 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
                 Player player = (Player) this;
                 if (player.getGamemode() != 1) this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
             } else {
-                this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
-                hasUpdate = true;
+                if ((this.inVoidTicks += tickDiff) >= this.getMaxInVoidTicks()) {
+                    this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
+                    hasUpdate = true;
+                }
             }
         }
 
@@ -1250,10 +1256,16 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
 
         this.age += tickDiff;
         this.ticksLived += tickDiff;
-        TimingsHistory.activatedEntityTicks++;
-
-        Timings.entityBaseTickTimer.stopTiming();
         return hasUpdate;
+    }
+
+    /**
+     * 在虚空中无敌的时间, 不能设置为 0, 不然会导致实体走着走着就没了
+     *
+     * @return 30
+     */
+    public int getMaxInVoidTicks() {
+        return 0;
     }
 
     protected void updateMovement() {
@@ -1316,6 +1328,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
         }
 
         if (!this.isAlive()) {
+            this.inVoidTicks = 0;
             ++this.deadTicks;
             if (this.deadTicks >= 10) {
                 this.despawnFromAll();
@@ -1334,7 +1347,12 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
 
         this.lastUpdate = currentTick;
 
-        boolean hasUpdate = this.entityBaseTick(tickDiff);
+        boolean hasUpdate = false;
+        try {
+            hasUpdate = this.entityBaseTick(tickDiff);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         this.updateMovement();
 
