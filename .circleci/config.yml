@@ -12,7 +12,8 @@ jobs:
             mvn clean
             mvn package
       - store_artifacts:
-          path: ./target/nukkit-1.0-SNAPSHOT.jar
+          path: ./target/
+          destination: nukkit
 workflows:
   version: 2
   build:
