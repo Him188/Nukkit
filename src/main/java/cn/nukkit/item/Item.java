@@ -943,11 +943,14 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     public int getMaxStackSize() {
+        return DEFAULT_MAX_STACK_SIZE;
+        /*
         if (!this.hasCompoundTag()) {
             return DEFAULT_MAX_STACK_SIZE;
         }
 
         return this.getNamedTag().getShort("maxStackSize");
+        */
     }
 
     public void setArmorPoints(int armorPoints){
@@ -960,11 +963,14 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     public int getArmorPoints() {
+        return DEFAULT_ARMOR_POINTS;
+        /*
         if (!this.hasCompoundTag()) {
             return DEFAULT_ARMOR_POINTS;
         }
 
         return this.getNamedTag().getShort("armorPoints");
+        */
     }
 
     public int getToughness() {

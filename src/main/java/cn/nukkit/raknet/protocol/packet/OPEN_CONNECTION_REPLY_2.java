@@ -43,7 +43,7 @@ public class OPEN_CONNECTION_REPLY_2 extends Packet {
         this.mtuSize = this.getSignedShort();
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

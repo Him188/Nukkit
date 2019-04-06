@@ -7,7 +7,7 @@ package cn.nukkit.command;
  * @author MagicDroidX(code) @ Nukkit Project
  * @author 粉鞋大妈(javadoc) @ Nukkit Project
  * @see cn.nukkit.plugin.PluginBase
- * @see cn.nukkit.command.CommandExecutor#onCommand
+ * @see CommandExecutor#onCommand
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public interface CommandExecutor {
@@ -30,9 +30,9 @@ public interface CommandExecutor {
      * that the command works.</p>
      *
      * <p>如果你想测试一个命令发送者是否有权限执行这个命令，
-     * 可以使用{@link cn.nukkit.command.Command#testPermissionSilent}。<br>
+     * 可以使用{@link Command#testPermissionSilent}。<br>
      * If you want to test whether a command sender has the permission to execute a command,
-     * you can use {@link cn.nukkit.command.Command#testPermissionSilent}.</p>
+     * you can use {@link Command#testPermissionSilent}.</p>
      *
      * @param sender  这个命令的发送者，可以是玩家或控制台等。<br>
      *                The sender of this command, this can be a player or a console.

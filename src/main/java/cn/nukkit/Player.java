@@ -568,6 +568,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (!spawned) {
             return;
         }
+        /*
         AvailableCommandsPacket pk = new AvailableCommandsPacket();
         Map<String, CommandDataVersions> data = new HashMap<>();
         int count = 0;
@@ -592,7 +593,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
                 }
             }, 60, true);
+
         }
+        */
+        Server.getInstance().getLogger().info(this.getName() + "的权限有更新");
+        this.sendMessage("你的权限有更新!");
     }
 
     @Override
@@ -2035,7 +2040,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 String.valueOf(NukkitMath.round(this.z, 4))));
 
         if (this.isOp() || this.hasPermission("nukkit.textcolor")) {
-            this.setRemoveFormat(false);
+           //this.setRemoveFormat(false);
         }
 
         this.server.addOnlinePlayer(this);

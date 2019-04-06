@@ -29,9 +29,9 @@ public interface PluginLoader {
      *
      * @param filename 这个插件的文件名字字符串。<br>A string of its file name.
      * @return 加载完毕的插件的 {@code Plugin}对象。<br>The loaded plugin as a {@code Plugin} object.
-     * @throws java.lang.Exception 插件加载失败所抛出的异常。<br>Thrown when an error occurred.
+     * @throws Exception 插件加载失败所抛出的异常。<br>Thrown when an error occurred.
      * @see #loadPlugin(File)
-     * @see cn.nukkit.plugin.PluginBase#init(PluginLoader, cn.nukkit.Server, PluginDescription, File, File)
+     * @see PluginBase#init(PluginLoader, cn.nukkit.Server, PluginDescription, File, File)
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     Plugin loadPlugin(String filename) throws Exception;
@@ -51,9 +51,9 @@ public interface PluginLoader {
      *
      * @param file 这个插件的文件的 {@code File}对象。<br>A {@code File} object for this plugin.
      * @return 加载完毕的插件的 {@code Plugin}对象。<br>The loaded plugin as a {@code Plugin} object.
-     * @throws java.lang.Exception 插件加载失败所抛出的异常。<br>Thrown when an error occurred.
+     * @throws Exception 插件加载失败所抛出的异常。<br>Thrown when an error occurred.
      * @see #loadPlugin(String)
-     * @see cn.nukkit.plugin.PluginBase#init(PluginLoader, cn.nukkit.Server, PluginDescription, File, File)
+     * @see PluginBase#init(PluginLoader, cn.nukkit.Server, PluginDescription, File, File)
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     Plugin loadPlugin(File file) throws Exception;

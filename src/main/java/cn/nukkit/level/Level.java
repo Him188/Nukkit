@@ -501,7 +501,7 @@ public class Level implements ChunkManager, Metadatable {
      * Broadcasts sound to players
      *
      * @param pos  position where sound should be played
-     * @param type ID of the sound from {@link cn.nukkit.network.protocol.LevelSoundEventPacket}
+     * @param type ID of the sound from {@link LevelSoundEventPacket}
      * @param data generic data that can affect sound
      */
     public void addLevelSoundEvent(Vector3 pos, int type, int data) {
@@ -1797,8 +1797,8 @@ public class Level implements ChunkManager, Metadatable {
 
                 motion = new Vector3(-MathHelper.sin(f1) * f, 0.20000000298023224, MathHelper.cos(f1) * f);
             } else {
-                motion = new Vector3(new java.util.Random().nextDouble() * 0.2 - 0.1, 0.2,
-                        new java.util.Random().nextDouble() * 0.2 - 0.1);
+                motion = new Vector3(new Random().nextDouble() * 0.2 - 0.1, 0.2,
+                        new Random().nextDouble() * 0.2 - 0.1);
             }
         }
 
@@ -1815,7 +1815,7 @@ public class Level implements ChunkManager, Metadatable {
                                     .add(new DoubleTag("", motion.y)).add(new DoubleTag("", motion.z)))
 
                             .putList(new ListTag<FloatTag>("Rotation")
-                                    .add(new FloatTag("", new java.util.Random().nextFloat() * 360))
+                                    .add(new FloatTag("", new Random().nextFloat() * 360))
                                     .add(new FloatTag("", 0)))
 
                             .putShort("Health", 5).putCompound("Item", itemTag).putShort("PickupDelay", delay));

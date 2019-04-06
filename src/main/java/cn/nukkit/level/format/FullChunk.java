@@ -40,9 +40,9 @@ public interface FullChunk extends Cloneable {
         return setBlock(x, y, z, fullId >> 4, fullId & 0xF);
     }
 
-    boolean setBlock(int x, int y, int z, int  blockId);
+    boolean setBlock(int x, int y, int z, int blockId);
 
-    boolean setBlock(int x, int y, int z, int  blockId, int  meta);
+    boolean setBlock(int x, int y, int z, int blockId, int meta);
 
     int getBlockId(int x, int y, int z);
 

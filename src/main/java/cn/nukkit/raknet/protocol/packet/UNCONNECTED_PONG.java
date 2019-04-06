@@ -37,7 +37,7 @@ public class UNCONNECTED_PONG extends Packet {
         this.serverName = this.getString();
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

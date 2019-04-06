@@ -102,7 +102,7 @@ public class Nukkit {
         }
         log.info("Stopping other threads");
 
-        for (Thread thread : java.lang.Thread.getAllStackTraces().keySet()) {
+        for (Thread thread : Thread.getAllStackTraces().keySet()) {
             if (!(thread instanceof InterruptibleThread)) {
                 continue;
             }
@@ -155,7 +155,7 @@ public class Nukkit {
         Preconditions.checkNotNull(level, "level");
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration log4jConfig = ctx.getConfiguration();
-        LoggerConfig loggerConfig = log4jConfig.getLoggerConfig(org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
+        LoggerConfig loggerConfig = log4jConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         loggerConfig.setLevel(level);
         ctx.updateLoggers();
     }

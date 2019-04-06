@@ -11,14 +11,14 @@ import java.io.InputStream;
  * 所有Nukkit插件必须实现的接口。<br>
  * An interface what must be implemented by all Nukkit plugins.
  *
- * <p>对于插件作者，我们建议让插件主类继承{@link cn.nukkit.plugin.PluginBase}类，而不是实现这个接口。<br>
- * For plugin developers: it's recommended to use {@link cn.nukkit.plugin.PluginBase} for an actual plugin
+ * <p>对于插件作者，我们建议让插件主类继承{@link PluginBase}类，而不是实现这个接口。<br>
+ * For plugin developers: it's recommended to use {@link PluginBase} for an actual plugin
  * instead of implement this interface.</p>
  *
  * @author MagicDroidX(code) @ Nukkit Project
  * @author 粉鞋大妈(javadoc) @ Nukkit Project
- * @see cn.nukkit.plugin.PluginBase
- * @see cn.nukkit.plugin.PluginDescription
+ * @see PluginBase
+ * @see PluginDescription
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public interface Plugin extends CommandExecutor {
@@ -103,7 +103,7 @@ public interface Plugin extends CommandExecutor {
      * For jar-packed Nukkit plugins, the description is defined in the 'plugin.yml' file.</p>
      *
      * @return 这个插件的描述。<br>A description of this plugin.
-     * @see cn.nukkit.plugin.PluginDescription
+     * @see PluginDescription
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     PluginDescription getDescription();
@@ -143,14 +143,14 @@ public interface Plugin extends CommandExecutor {
      * it won't happen to load an empty resource when plugin is ENABLED, and plugin users are not required to get
      * default resources from the developer and place it manually. </p>
      *
-     * <p>如果需要替换已存在的资源文件，建议使用{@link cn.nukkit.plugin.Plugin#saveResource(String, boolean)}<br>
+     * <p>如果需要替换已存在的资源文件，建议使用{@link Plugin#saveResource(String, boolean)}<br>
      * If you need to REPLACE an existing resource file, it's recommended
-     * to use {@link cn.nukkit.plugin.Plugin#saveResource(String, boolean)}.</p>
+     * to use {@link Plugin#saveResource(String, boolean)}.</p>
      *
      * @param filename 要保存的资源文件名字。<br>The name of the resource file to save.
      * @return 保存是否成功。<br>true if the saving action is successful.
-     * @see cn.nukkit.plugin.Plugin#saveDefaultConfig
-     * @see cn.nukkit.plugin.Plugin#saveResource(String, boolean)
+     * @see Plugin#saveDefaultConfig
+     * @see Plugin#saveResource(String, boolean)
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     boolean saveResource(String filename);
@@ -163,14 +163,14 @@ public interface Plugin extends CommandExecutor {
      * For jar-packed Nukkit plugins, Nukkit will look for your resource file in the resources folder,
      * which is normally named 'resources' and placed in plugin jar file, and copy it into data folder.</p>
      *
-     * <p>如果需要保存默认的资源文件，建议使用{@link cn.nukkit.plugin.Plugin#saveResource(String)}<br>
+     * <p>如果需要保存默认的资源文件，建议使用{@link Plugin#saveResource(String)}<br>
      * If you need to SAVE DEFAULT resource file, it's recommended
-     * to use {@link cn.nukkit.plugin.Plugin#saveResource(String)}.</p>
+     * to use {@link Plugin#saveResource(String)}.</p>
      *
      * @param filename 要保存的资源文件名字。<br>The name of the resource file to save.
      * @param replace  是否替换目标文件。<br>if true, Nukkit will replace the target resource file.
      * @return 保存是否成功。<br>true if the saving action is successful.
-     * @see cn.nukkit.plugin.Plugin#saveResource(String)
+     * @see Plugin#saveResource(String)
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
 
@@ -179,14 +179,14 @@ public interface Plugin extends CommandExecutor {
     boolean saveResource(String filename, String outputName, boolean replace);
 
     /**
-     * 返回这个Nukkit插件配置文件的{@link cn.nukkit.utils.Config}对象。<br>
-     * The config file this Nukkit plugin as a {@link cn.nukkit.utils.Config} object.
+     * 返回这个Nukkit插件配置文件的{@link Config}对象。<br>
+     * The config file this Nukkit plugin as a {@link Config} object.
      *
      * <p>一般地，插件的配置保存在数据文件夹下的config.yml文件。<br>
      * Normally, the plugin config is saved in the 'config.yml' file in its data folder.</p>
      *
      * @return 插件的配置文件。<br>The configuration of this plugin.
-     * @see cn.nukkit.plugin.Plugin#getDataFolder
+     * @see Plugin#getDataFolder
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     Config getConfig();
@@ -195,7 +195,7 @@ public interface Plugin extends CommandExecutor {
      * 保存这个Nukkit插件的配置文件。<br>
      * Saves the plugin config.
      *
-     * @see cn.nukkit.plugin.Plugin#getDataFolder
+     * @see Plugin#getDataFolder
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     void saveConfig();
@@ -215,8 +215,8 @@ public interface Plugin extends CommandExecutor {
      * it won't happen to load an empty config when plugin is ENABLED, and plugin users are not required to get
      * default config from the developer and place it manually. </p>
      *
-     * @see cn.nukkit.plugin.Plugin#getDataFolder
-     * @see cn.nukkit.plugin.Plugin#saveResource
+     * @see Plugin#getDataFolder
+     * @see Plugin#saveResource
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     void saveDefaultConfig();
@@ -230,16 +230,16 @@ public interface Plugin extends CommandExecutor {
      * By using this, Nukkit will reload the config from 'config.yml' file, then it isn't necessary to restart
      * for plugin user who changes the config and needs to use new config at once.</p>
      *
-     * @see cn.nukkit.plugin.Plugin#getDataFolder
+     * @see Plugin#getDataFolder
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     void reloadConfig();
 
     /**
-     * 返回运行这个插件的服务器的{@link cn.nukkit.Server}对象。<br>
-     * Gets the server which is running this plugin, and returns as a {@link cn.nukkit.Server} object.
+     * 返回运行这个插件的服务器的{@link Server}对象。<br>
+     * Gets the server which is running this plugin, and returns as a {@link Server} object.
      *
-     * @see cn.nukkit.Server
+     * @see Server
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     Server getServer();
@@ -251,28 +251,28 @@ public interface Plugin extends CommandExecutor {
      * <p>Nukkit会从已经读取的插件描述中获取插件的名字。<br>
      * Nukkit will read plugin name from plugin description.</p>
      *
-     * @see cn.nukkit.plugin.Plugin#getDescription
+     * @see Plugin#getDescription
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     String getName();
 
     /**
-     * 返回这个插件的日志记录器为{@link cn.nukkit.plugin.PluginLogger}对象。<br>
-     * Returns the logger of this plugin as a {@link cn.nukkit.plugin.PluginLogger} object.
+     * 返回这个插件的日志记录器为{@link PluginLogger}对象。<br>
+     * Returns the logger of this plugin as a {@link PluginLogger} object.
      *
      * <p>使用日志记录器，你可以在控制台和日志文件输出信息。<br>
      * You can use a plugin logger to output messages to the console and log file.</p>
      *
-     * @see cn.nukkit.plugin.PluginLogger
+     * @see PluginLogger
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     PluginLogger getLogger();
 
     /**
-     * 返回这个插件的加载器为{@link cn.nukkit.plugin.PluginLoader}对象。<br>
-     * Returns the loader of this plugin as a {@link cn.nukkit.plugin.PluginLoader} object.
+     * 返回这个插件的加载器为{@link PluginLoader}对象。<br>
+     * Returns the loader of this plugin as a {@link PluginLoader} object.
      *
-     * @see cn.nukkit.plugin.PluginLoader
+     * @see PluginLoader
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     PluginLoader getPluginLoader();

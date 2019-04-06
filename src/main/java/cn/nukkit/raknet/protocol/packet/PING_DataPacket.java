@@ -28,7 +28,7 @@ public class PING_DataPacket extends Packet {
         this.pingID = this.getLong();
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

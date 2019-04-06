@@ -14,7 +14,7 @@ public class CLIENT_DISCONNECT_DataPacket extends Packet {
         return ID;
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

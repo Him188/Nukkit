@@ -182,7 +182,7 @@ public abstract class EntityLiving extends Entity {
         this.server.getPluginManager().callEvent(ev);
 
         if (this.level.getGameRules().getBoolean(GameRule.DO_ENTITY_DROPS)) {
-            for (cn.nukkit.item.Item item : ev.getDrops()) {
+            for (Item item : ev.getDrops()) {
                 this.getLevel().dropItem(this, item);
             }
         }

@@ -14,11 +14,11 @@ import cn.nukkit.utils.EventException;
  * When Nukkit is calling a handler, the event needed to listen is judged by the type of the parameter. </p>
  *
  * <p>关于监听器的实现，参阅：{@link Listener} <br>
- * For the way to implement a listener, see: {@link cn.nukkit.event.Listener}</p>
+ * For the way to implement a listener, see: {@link Listener}</p>
  *
  * @author Unknown(code) @ Nukkit Project
  * @author 粉鞋大妈(javadoc) @ Nukkit Project
- * @see cn.nukkit.event.EventHandler
+ * @see EventHandler
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public abstract class Event {

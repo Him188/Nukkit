@@ -39,7 +39,7 @@ package cn.nukkit.event;
  *
  * @author Unknown(code) @ Nukkit Project
  * @author 粉鞋大妈(javadoc) @ Nukkit Project
- * @see cn.nukkit.event.Event
+ * @see Event
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public interface Listener {

@@ -42,7 +42,7 @@ public class OPEN_CONNECTION_REQUEST_2 extends Packet {
         this.clientID = this.getLong();
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

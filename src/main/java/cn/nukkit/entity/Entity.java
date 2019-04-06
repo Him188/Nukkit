@@ -1265,7 +1265,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
      * @return 30
      */
     public int getMaxInVoidTicks() {
-        return 0;
+        return 30;
     }
 
     protected void updateMovement() {

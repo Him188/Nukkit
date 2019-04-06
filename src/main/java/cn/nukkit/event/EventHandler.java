@@ -18,8 +18,8 @@ import java.lang.annotation.Target;
  *
  * @author MagicDroidX(code) @ Nukkit Project
  * @author null(javadoc) @ Nukkit Project
- * @see cn.nukkit.event.Listener
- * @see cn.nukkit.event.Event
+ * @see Listener
+ * @see Event
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 
@@ -45,7 +45,7 @@ public @interface EventHandler {
      * </ol>
      *
      * @return 这个处理器的优先级。<br>The priority of this handler.
-     * @see cn.nukkit.event.EventHandler
+     * @see EventHandler
      */
     EventPriority priority() default EventPriority.NORMAL;
 
@@ -58,7 +58,7 @@ public @interface EventHandler {
      * not called. Otherwise, the method is always called.</p>
      *
      * @return 这个处理器是否忽略被取消的事件。<br>Whether cancelled events should be ignored.
-     * @see cn.nukkit.event.EventHandler
+     * @see EventHandler
      */
     boolean ignoreCancelled() default false;
 }

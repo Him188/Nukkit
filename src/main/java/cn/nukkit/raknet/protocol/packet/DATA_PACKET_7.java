@@ -15,7 +15,7 @@ public class DATA_PACKET_7 extends DataPacket {
         return ID;
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

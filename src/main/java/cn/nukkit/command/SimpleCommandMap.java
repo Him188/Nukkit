@@ -291,7 +291,7 @@ public class SimpleCommandMap implements CommandMap {
 
     public void registerServerAliases() {
         Map<String, List<String>> values = this.server.getCommandAliases();
-        for (Map.Entry<String, List<String>> entry : values.entrySet()) {
+        for (Entry<String, List<String>> entry : values.entrySet()) {
             String alias = entry.getKey();
             List<String> commandStrings = entry.getValue();
             if (alias.contains(" ") || alias.contains(":")) {

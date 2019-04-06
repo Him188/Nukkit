@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
  *
  * @author MagicDroidX(code) @ Nukkit Project
  * @author 粉鞋大妈(javadoc) @ Nukkit Project
- * @see cn.nukkit.plugin.PluginDescription
+ * @see PluginDescription
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 abstract public class PluginBase implements Plugin {
@@ -269,7 +269,7 @@ abstract public class PluginBase implements Plugin {
      * <p>{@code HelloWorld v1.0.0}</p>
      *
      * @return 这个插件完整的名字。<br>The full name of this plugin.
-     * @see cn.nukkit.plugin.PluginDescription#getFullName
+     * @see PluginDescription#getFullName
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     public final String getFullName() {

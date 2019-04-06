@@ -30,7 +30,7 @@ public class UNCONNECTED_PING extends Packet {
         this.pingID = this.getLong();
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {

@@ -439,8 +439,8 @@ public class Chunk extends BaseChunk {
     @Override
     public int getBlockSkyLight(int x, int y, int z) {
         cn.nukkit.level.format.ChunkSection section = this.sections[y >> 4];
-        if (section instanceof cn.nukkit.level.format.anvil.ChunkSection) {
-            cn.nukkit.level.format.anvil.ChunkSection anvilSection = (cn.nukkit.level.format.anvil.ChunkSection) section;
+        if (section instanceof ChunkSection) {
+            ChunkSection anvilSection = (ChunkSection) section;
             if (anvilSection.skyLight != null) {
                 return section.getBlockSkyLight(x, y & 0x0f, z);
             } else if (!anvilSection.hasSkyLight) {
@@ -463,8 +463,8 @@ public class Chunk extends BaseChunk {
     @Override
     public int getBlockLight(int x, int y, int z) {
         cn.nukkit.level.format.ChunkSection section = this.sections[y >> 4];
-        if (section instanceof cn.nukkit.level.format.anvil.ChunkSection) {
-            cn.nukkit.level.format.anvil.ChunkSection anvilSection = (cn.nukkit.level.format.anvil.ChunkSection) section;
+        if (section instanceof ChunkSection) {
+            ChunkSection anvilSection = (ChunkSection) section;
             if (anvilSection.blockLight != null) {
                 return section.getBlockLight(x, y & 0x0f, z);
             } else if (!anvilSection.hasBlockLight) {

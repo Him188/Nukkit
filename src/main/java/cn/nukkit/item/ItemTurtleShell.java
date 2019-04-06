@@ -29,7 +29,7 @@ public class ItemTurtleShell extends ItemArmor {
 
     @Override
     public int getArmorPoints() {
-        return 2;
+        return 0;
     }
 
     @Override

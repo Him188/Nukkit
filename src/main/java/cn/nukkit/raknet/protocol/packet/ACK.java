@@ -16,7 +16,7 @@ public class ACK extends AcknowledgePacket {
         return ID;
     }
 
-    public static final class Factory implements Packet.PacketFactory {
+    public static final class Factory implements PacketFactory {
 
         @Override
         public Packet create() {
