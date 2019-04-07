@@ -40,10 +40,11 @@ public class ServerScheduler {
         return addTask(task, 0, 0, false);
     }
 
-    /**
+    /*
+     * 修改: 忽略了弃用.
+     *
      * @deprecated Use {@link #scheduleTask(Plugin, Runnable)}
      */
-    @Deprecated
     public TaskHandler scheduleTask(Runnable task) {
         return addTask(null, task, 0, 0, false);
     }
@@ -52,10 +53,11 @@ public class ServerScheduler {
         return addTask(plugin, task, 0, 0, false);
     }
 
-    /**
+    /*
+     * 修改: 忽略了弃用.
+     *
      * @deprecated Use {@link #scheduleTask(Plugin, Runnable, boolean)}
      */
-    @Deprecated
     public TaskHandler scheduleTask(Runnable task, boolean asynchronous) {
         return addTask(null, task, 0, 0, asynchronous);
     }
@@ -64,10 +66,21 @@ public class ServerScheduler {
         return addTask(plugin, task, 0, 0, asynchronous);
     }
 
-    /**
+
+    public TaskHandler scheduleAsyncTask(Runnable task) {
+        return addTask(null, new AsyncTask() {
+            @Override
+            public void onRun() {
+                task.run();
+            }
+        }, 0, 0, true);
+    }
+
+    /*
+     * 修改: 忽略了弃用.
+     *
      * @deprecated Use {@link #scheduleAsyncTask(Plugin, AsyncTask)}
      */
-    @Deprecated
     public TaskHandler scheduleAsyncTask(AsyncTask task) {
         return addTask(null, task, 0, 0, true);
     }
@@ -222,7 +235,7 @@ public class ServerScheduler {
             }
         }
         this.taskMap.clear();
-        this.queueMap .clear();
+        this.queueMap.clear();
         this.currentTaskId.set(0);
     }
 
