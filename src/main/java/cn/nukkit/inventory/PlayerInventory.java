@@ -7,6 +7,7 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.EntityHumanType;
 import cn.nukkit.event.entity.EntityArmorChangeEvent;
 import cn.nukkit.event.entity.EntityInventoryChangeEvent;
+import cn.nukkit.event.player.PlayerArmorChangeEvent;
 import cn.nukkit.event.player.PlayerItemHeldEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -179,8 +180,11 @@ public class PlayerInventory extends BaseInventory {
         }
 
         if (index >= this.getSize()) {
+            PlayerArmorChangeEvent ev = new PlayerArmorChangeEvent((Player)(this.getHolder()), before, this.getItem(index));
+            this.getHolder().getLevel().getServer().getPluginManager().callEvent(ev);
             this.sendArmorSlot(index, this.getViewers());
             this.sendArmorSlot(index, this.getHolder().getViewers().values());
+
         } else {
             super.onSlotChange(index, before, send);
         }
@@ -246,6 +250,7 @@ public class PlayerInventory extends BaseInventory {
             return this.clear(index);
         }
 
+        Server.getInstance().getLogger().info("setItem" + item + " in index" + index);
         //Armor change
         if (!ignoreArmorEvents && index >= this.getSize()) {
             EntityArmorChangeEvent ev = new EntityArmorChangeEvent(this.getHolder(), this.getItem(index), item, index);
@@ -256,6 +261,7 @@ public class PlayerInventory extends BaseInventory {
             }
             item = ev.getNewItem();
         } else {
+
             EntityInventoryChangeEvent ev = new EntityInventoryChangeEvent(this.getHolder(), this.getItem(index), item, index);
             Server.getInstance().getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
