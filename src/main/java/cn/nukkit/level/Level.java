@@ -582,7 +582,7 @@ public class Level implements ChunkManager, Metadatable {
                 TextFormat.GREEN + this.getName() + TextFormat.WHITE));
         Level defaultLevel = this.server.getDefaultLevel();
 
-        for (Player player : new ArrayList<>(this.getPlayers().values())) {
+        for (Player player : this.getPlayers().values()) {
             if (this == defaultLevel || defaultLevel == null) {
                 player.close(player.getLeaveMessage(), "Forced default level unload");
             } else {
@@ -792,7 +792,7 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.entityTick.startTiming();
 
         if (!this.updateEntities.isEmpty()) {
-            for (long id : new ArrayList<>(this.updateEntities.keySet())) {
+            for (long id : this.updateEntities.keySet()) {
                 Entity entity = this.updateEntities.get(id);
                 if (entity == null) {
                     this.updateEntities.remove(id);
@@ -2205,7 +2205,7 @@ public class Level implements ChunkManager, Metadatable {
             for (int x = minX; x <= maxX; ++x) {
                 for (int z = minZ; z <= maxZ; ++z) {
                     for (Entity ent : this.getChunkEntities(x, z, false).values()) {
-                        if ((entity == null || (ent != entity && entity.canCollideWith(ent)))
+                        if ((ent != null || ent != entity && entity.canCollideWith(ent))
                             && ent.boundingBox.intersectsWith(bb)) {
                             nearby.add(ent);
                         }

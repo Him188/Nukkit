@@ -673,7 +673,7 @@ public class Server {
     }
 
     public void enablePlugins(PluginLoadOrder type) {
-        for (Plugin plugin : new ArrayList<>(this.pluginManager.getPlugins().values())) {
+        for (Plugin plugin : this.pluginManager.getPlugins().values()) {
             if (!plugin.isEnabled() && type == plugin.getDescription().getOrder()) {
                 this.enablePlugin(plugin);
             }
@@ -776,7 +776,7 @@ public class Server {
             this.getLogger().debug("Disabling all plugins");
             this.pluginManager.disablePlugins();
 
-            for (Player player : new ArrayList<>(this.players.values())) {
+            for (Player player : this.players.values()) {
                 player.close(player.getLeaveMessage(), this.getConfig("settings.shutdown-message", "Server closed"));
             }
 
@@ -981,7 +981,7 @@ public class Server {
     }
 
     private void checkTickUpdates(int currentTick, long tickTime) {
-        for (Player p : new ArrayList<>(this.players.values())) {
+        for (Player p : this.players.values()) {
             /*if (!p.loggedIn && (tickTime - p.creationTime) >= 10000 && p.kick(PlayerKickEvent.Reason.LOGIN_TIMEOUT, "Login timeout")) {
                 continue;
             }
@@ -1026,14 +1026,15 @@ public class Server {
                     }
                 }
             } catch (Exception e) {
-                log.error(this.getLanguage().translateString("nukkit.level.tickError"), e);
+                log.error(this.getLanguage().translateString("nukkit.level.tickError"));
+                e.printStackTrace();
             }
         }
     }
 
     public void doAutoSave() {
         if (this.getAutoSave()) {
-            for (Player player : new ArrayList<>(this.players.values())) {
+            for (Player player : this.players.values()) {
                 if (player.isOnline()) {
                     player.save(true);
                 } else if (!player.isConnected()) {
@@ -1083,7 +1084,7 @@ public class Server {
 
         this.checkTickUpdates(this.tickCounter, tickTime);
 
-        for (Player player : new ArrayList<>(this.players.values())) {
+        for (Player player : this.players.values()) {
             player.checkNetwork();
         }
 
@@ -1585,7 +1586,7 @@ public class Server {
             return;
         }
 
-        for (String identifier : new ArrayList<>(this.players.keySet())) {
+        for (String identifier : this.players.keySet()) {
             Player p = this.players.get(identifier);
             if (player == p) {
                 this.players.remove(identifier);
