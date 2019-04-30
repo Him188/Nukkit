@@ -103,4 +103,5 @@ public interface EntityRideable extends IEntity {
         return true;
     }
 
+    boolean dismountEntity(Entity entity);
 }

@@ -28,7 +28,7 @@ public class ItemPotionSplash extends ProjectileItem {
 
     @Override
     public float getThrowForce() {
-        return 0.47f;
+        return 0.5f;
     }
 
     @Override

@@ -1312,8 +1312,8 @@ public class Level implements ChunkManager, Metadatable {
             for (int z = minZ; z <= maxZ; ++z) {
                 for (int x = minX; x <= maxX; ++x) {
                     for (int y = minY; y <= maxY; ++y) {
-                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z));
-                        if (block.getId() != 0 && block.collidesWithBB(bb)) {
+                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z), false);
+                        if (block != null && block.getId() != 0 && block.collidesWithBB(bb)) {
                             return new Block[]{block};
                         }
                     }
@@ -1323,8 +1323,8 @@ public class Level implements ChunkManager, Metadatable {
             for (int z = minZ; z <= maxZ; ++z) {
                 for (int x = minX; x <= maxX; ++x) {
                     for (int y = minY; y <= maxY; ++y) {
-                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z));
-                        if (block.getId() != 0 && block.collidesWithBB(bb)) {
+                        Block block = this.getBlock(this.temporalVector.setComponents(x, y, z), false);
+                        if (block != null && block.getId() != 0 && block.collidesWithBB(bb)) {
                             collides.add(block);
                         }
                     }
@@ -1403,6 +1403,10 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public AxisAlignedBB[] getCollisionCubes(Entity entity, AxisAlignedBB bb, boolean entities) {
+        return getCollisionCubes(entity, bb, entities, false);
+    }
+
+    public AxisAlignedBB[] getCollisionCubes(Entity entity, AxisAlignedBB bb, boolean entities, boolean solidEntities) {
         int minX = NukkitMath.floorDouble(bb.getMinX());
         int minY = NukkitMath.floorDouble(bb.getMinY());
         int minZ = NukkitMath.floorDouble(bb.getMinZ());
@@ -1423,9 +1427,11 @@ public class Level implements ChunkManager, Metadatable {
             }
         }
 
-        if (entities) {
+        if (entities || solidEntities) {
             for (Entity ent : this.getCollidingEntities(bb.grow(0.25f, 0.25f, 0.25f), entity)) {
-                collides.add(ent.boundingBox.clone());
+                if (solidEntities && !ent.canPassThrough()) {
+                    collides.add(ent.boundingBox.clone());
+                }
             }
         }
 
@@ -1974,7 +1980,7 @@ public class Level implements ChunkManager, Metadatable {
 
         if (this.gameRules.getBoolean(GameRule.DO_TILE_DROPS)) {
             int dropExp = target.getDropExp();
-            if (!isSilkTouch && player != null) {
+            if (!isSilkTouch && player != null && drops.length != 0) {
                 player.addExperience(dropExp);
                 if (player.isSurvival()) {
                     for (int ii = 1; ii <= dropExp; ii++) {
@@ -3228,19 +3234,19 @@ public class Level implements ChunkManager, Metadatable {
         this.server.getLevelMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
 
-    public void addEntityMotion(int chunkX, int chunkZ, long entityId, double x, double y, double z) {
+    public void addEntityMotion(Entity entity, double x, double y, double z) {
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
-        pk.eid = entityId;
+        pk.eid = entity.getId();
         pk.motionX = (float) x;
         pk.motionY = (float) y;
         pk.motionZ = (float) z;
 
-        this.addChunkPacket(chunkX, chunkZ, pk);
+        Server.broadcastPacket(entity.getViewers().values(), pk);
     }
 
-    public void addEntityMovement(int chunkX, int chunkZ, long entityId, double x, double y, double z, double yaw, double pitch, double headYaw) {
+    public void addEntityMovement(Entity entity, double x, double y, double z, double yaw, double pitch, double headYaw) {
         MoveEntityAbsolutePacket pk = new MoveEntityAbsolutePacket();
-        pk.eid = entityId;
+        pk.eid = entity.getId();
         pk.x = (float) x;
         pk.y = (float) y;
         pk.z = (float) z;
@@ -3248,7 +3254,7 @@ public class Level implements ChunkManager, Metadatable {
         pk.headYaw = (float) yaw;
         pk.pitch = (float) pitch;
 
-        this.addChunkPacket(chunkX, chunkZ, pk);
+        Server.broadcastPacket(entity.getViewers().values(), pk);
     }
 
     public boolean isRaining() {
@@ -3489,4 +3495,54 @@ public class Level implements ChunkManager, Metadatable {
     public int getUpdateLCG() {
         return (this.updateLCG = (this.updateLCG * 3) ^ LCG_CONSTANT);
     }
+
+//    private static void orderGetRidings(Entity entity, LongSet set) {
+//        if (entity.riding != null) {
+//            if(!set.add(entity.riding.getId())) {
+//                throw new RuntimeException("Circular entity link detected (id = "+entity.riding.getId()+")");
+//            }
+//            orderGetRidings(entity.riding, set);
+//        }
+//    }
+//
+//    public List<Entity> orderChunkEntitiesForSpawn(int chunkX, int chunkZ) {
+//        return orderChunkEntitiesForSpawn(getChunk(chunkX, chunkZ, false));
+//    }
+//
+//    public List<Entity> orderChunkEntitiesForSpawn(BaseFullChunk chunk) {
+//        Comparator<Entity> comparator = (o1, o2) -> {
+//            if (o1.riding == null) {
+//                if(o2 == null) {
+//                    return 0;
+//                }
+//
+//                return -1;
+//            }
+//
+//            if (o2.riding == null) {
+//                return 1;
+//            }
+//
+//            LongSet ridings = new LongOpenHashSet();
+//            orderGetRidings(o1, ridings);
+//
+//            if(ridings.contains(o2.getId())) {
+//                return 1;
+//            }
+//
+//            ridings.clear();
+//            orderGetRidings(o2, ridings);
+//
+//            if(ridings.contains(o1.getId())) {
+//                return -1;
+//            }
+//
+//            return 0;
+//        };
+//
+//        List<Entity> sorted = new ArrayList<>(chunk.getEntities().values());
+//        sorted.sort(comparator);
+//
+//        return sorted;
+//    }
 }
