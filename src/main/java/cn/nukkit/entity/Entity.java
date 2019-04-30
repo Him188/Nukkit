@@ -353,10 +353,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
         return 0;
     }
 
-    public Entity getRiding() {
-        return riding;
-    }
-
     public void setRiding(Entity riding) {
         this.riding = riding;
     }
@@ -736,35 +732,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity {
 
     public void collidingWith(Entity ent) { // can override (IronGolem|Bats)
         ent.applyEntityCollision(this);
-    }
-
-    protected void initEntity() {
-        if (this.namedTag.contains("ActiveEffects")) {
-            ListTag<CompoundTag> effects = this.namedTag.getList("ActiveEffects", CompoundTag.class);
-            for (CompoundTag e : effects.getAll()) {
-                Effect effect = Effect.getEffect(e.getByte("Id"));
-                if (effect == null) {
-                    continue;
-                }
-
-                effect.setAmplifier(e.getByte("Amplifier")).setDuration(e.getInt("Duration")).setVisible(e.getBoolean("showParticles"));
-
-                this.addEffect(effect);
-            }
-        }
-
-        if (this.namedTag.contains("CustomName")) {
-            this.setNameTag(this.namedTag.getString("CustomName"));
-            if (this.namedTag.contains("CustomNameVisible")) {
-                this.setNameTagVisible(this.namedTag.getBoolean("CustomNameVisible"));
-            }
-        }
-
-        this.setDataFlag(DATA_FLAGS, DATA_FLAG_HAS_COLLISION, true);
-        this.dataProperties.putFloat(DATA_BOUNDING_BOX_HEIGHT, this.getHeight());
-        this.dataProperties.putFloat(DATA_BOUNDING_BOX_WIDTH, this.getWidth());
-
-        this.scheduleUpdate();
     }
 
     public static Entity createEntity(String name, FullChunk chunk, CompoundTag nbt, Object... args) {

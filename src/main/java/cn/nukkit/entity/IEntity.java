@@ -127,9 +127,15 @@ public interface IEntity extends Metadatable {
 
     float getScale();
 
-    Entity getLinkedEntity();
+    List<Entity> getPassengers();
 
-    void setLinkedEntity(Entity entity);
+    Entity getPassenger();
+
+    boolean isPassenger(Entity entity);
+
+    boolean isControlling(Entity entity);
+
+    boolean hasControllingPassenger();
 
     Map<Integer, Effect> getEffects();
 
@@ -204,8 +210,6 @@ public interface IEntity extends Metadatable {
     BlockFace getHorizontalFacing();
 
     boolean onUpdate(int currentTick);
-
-    float getMountedYOffset();
 
     boolean isOnFire();
 
