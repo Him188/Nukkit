@@ -23,6 +23,9 @@ public class DropItemAction extends InventoryAction {
 
     @Override
     public boolean onPreExecute(Player source) {
+        if (this.getTargetItem().isUndropable()) {
+            return false;
+        }
         PlayerDropItemEvent ev;
         source.getServer().getPluginManager().callEvent(ev = new PlayerDropItemEvent(source, this.targetItem));
         return !ev.isCancelled();

@@ -272,7 +272,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
             //TODO: list[SHULKER_SHELL] = ItemShulkerShell.class; //445
             list[BANNER] = ItemBanner.class; //446
-            
+
             list[TRIDENT] = ItemTrident.class; //455
 
             list[BEETROOT] = ItemBeetroot.class; //457
@@ -285,7 +285,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[DRIED_KELP] = ItemDriedKelp.class; //464
 
             list[GOLDEN_APPLE_ENCHANTED] = ItemAppleGoldEnchanted.class; //466
-            
+
             list[TURTLE_SHELL] = ItemTurtleShell.class; //469
 
             list[RECORD_11] = ItemRecord11.class;
@@ -808,8 +808,9 @@ public class Item implements Cloneable, BlockID, ItemID {
         return count;
     }
 
-    public void setCount(int count) {
+    public Item setCount(int count) {
         this.count = count;
+        return this;
     }
 
     public boolean isNull() {
@@ -851,7 +852,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     public static int DEFAULT_MAX_STACK_SIZE = 64;
     public static int DEFAULT_ARMOR_POINTS = 0;
 
-    public void setMaxStackSize(int maxStackSize){
+    public void setMaxStackSize(int maxStackSize) {
         if (!this.hasCompoundTag()) {
             this.setNamedTag(new CompoundTag());
         }
@@ -953,7 +954,7 @@ public class Item implements Cloneable, BlockID, ItemID {
         */
     }
 
-    public void setArmorPoints(int armorPoints){
+    public void setArmorPoints(int armorPoints) {
         if (!this.hasCompoundTag()) {
             this.setNamedTag(new CompoundTag());
         }
@@ -977,8 +978,49 @@ public class Item implements Cloneable, BlockID, ItemID {
         return 0;
     }
 
+    /**
+     * Him188moe
+     */
+    public Item setUnbreakable(boolean unbreakable) {
+        this.setNamedTagEntry("Unbreakable", new ByteTag(unbreakable ? 1 : 0));
+        return this;
+    }
+
     public boolean isUnbreakable() {
-        return false;
+        Tag tag = this.getNamedTagEntry("Unbreakable");
+        return tag instanceof ByteTag && ((ByteTag) tag).data > 0;
+    }
+
+    /**
+     * Him188moe
+     */
+    public Item setUndropable(boolean undropable) {
+        this.setNamedTagEntry("Undropable", new ByteTag(undropable ? 1 : 0));
+        return this;
+    }
+
+    /**
+     * Him188moe
+     */
+    public boolean isUndropable() {
+        Tag tag = this.getNamedTagEntry("Undropable");
+        return tag instanceof ByteTag && ((ByteTag) tag).data > 0;
+    }
+
+
+    /**
+     * Him188moe
+     */
+    public Item setNamedTagEntry(String name, Tag value) {
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        tag.put(name, value);
+        return this;
     }
 
     @Override

@@ -18,6 +18,11 @@ public class ByteTag extends NumberTag<Integer> {
         this.data = data == null ? 0 : data;
     }
 
+    public ByteTag(int data) {
+        super("");
+        this.data = data;
+    }
+
     public ByteTag(String name) {
         super(name);
     }

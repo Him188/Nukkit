@@ -298,7 +298,7 @@ public class Server {
                 InputStream conf = this.getClass().getClassLoader().getResourceAsStream("lang/" + lang + "/lang.ini");
                 if (conf != null) {
                     language = lang;
-                } else if(predefinedLanguage != null) {
+                } else if (predefinedLanguage != null) {
                     log.warn("No language found for predefined language: " + predefinedLanguage + ", please choose a valid language");
                     predefinedLanguage = null;
                 }
@@ -1014,11 +1014,11 @@ public class Server {
         pk.type = PlayerListPacket.TYPE_ADD;
         pk.entries = this.playerList.values().stream()
                 .map(p -> new PlayerListPacket.Entry(
-                p.getUniqueId(),
-                p.getId(),
-                p.getDisplayName(),
-                p.getSkin(),
-                p.getLoginChainData().getXUID()))
+                        p.getUniqueId(),
+                        p.getId(),
+                        p.getDisplayName(),
+                        p.getSkin(),
+                        p.getLoginChainData().getXUID()))
                 .toArray(PlayerListPacket.Entry[]::new);
 
         player.dataPacket(pk);
@@ -1219,15 +1219,15 @@ public class Server {
         double max = NukkitMath.round(((double) runtime.maxMemory()) / 1024 / 1024, 2);
         String usage = Math.round(used / max * 100) + "%";
         String title = (char) 0x1b + "]0;" + this.getName() + " "
-                + this.getNukkitVersion()
-                + " | Online " + this.players.size() + "/" + this.getMaxPlayers()
-                + " | Memory " + usage;
+                       + this.getNukkitVersion()
+                       + " | Online " + this.players.size() + "/" + this.getMaxPlayers()
+                       + " | Memory " + usage;
         if (!Nukkit.shortTitle) {
             title += " | U " + NukkitMath.round((this.network.getUpload() / 1024 * 1000), 2)
-                    + " D " + NukkitMath.round((this.network.getDownload() / 1024 * 1000), 2) + " kB/s";
+                     + " D " + NukkitMath.round((this.network.getDownload() / 1024 * 1000), 2) + " kB/s";
         }
         title += " | TPS " + this.getTicksPerSecond()
-                + " | Load " + this.getTickUsage() + "%" + (char) 0x07;
+                 + " | Load " + this.getTickUsage() + "%" + (char) 0x07;
 
         System.out.print(title);
     }
@@ -1666,7 +1666,7 @@ public class Server {
                 //doing it like this ensures that the playerdata will be saved in a server shutdown
                 @Override
                 public void onCancel() {
-                    if (!this.hasRun)    {
+                    if (!this.hasRun) {
                         this.hasRun = true;
                         saveOfflinePlayerDataInternal(event.getSerializer(), tag, nameLower, event.getUuid().orElse(null));
                     }
@@ -1761,6 +1761,20 @@ public class Server {
         }
 
         return null;
+    }
+
+    /**
+     * 获取最佳匹配的玩家名. <br/>
+     * 如果 {@link #getPlayer(String)} 有返回, 就返回 {@link Player#getName()}.
+     * 否则, 返回参数提供的 name
+     */
+    public String matchPlayerName(String name) {
+        Player player = this.getPlayer(name);
+        if (player == null) {
+            return name;
+        } else {
+            return player.getName();
+        }
     }
 
     public Player[] matchPlayer(String partialName) {
