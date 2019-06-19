@@ -6,6 +6,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
+import org.intellij.lang.annotations.MagicConstant;
 
 
 /**
@@ -17,7 +18,14 @@ public abstract class BlockFallable extends BlockSolid {
     protected BlockFallable() {
     }
 
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             Block down = this.down();
             if (down.getId() == AIR || down instanceof BlockLiquid) {

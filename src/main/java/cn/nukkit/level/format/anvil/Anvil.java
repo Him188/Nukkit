@@ -1,5 +1,6 @@
 package cn.nukkit.level.format.anvil;
 
+import cn.nukkit.Server;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.level.Level;
@@ -209,7 +210,6 @@ public class Anvil extends BaseLevelProvider {
         int regionX = getRegionIndexX(chunkX);
         int regionZ = getRegionIndexZ(chunkZ);
         BaseRegionLoader region = this.loadRegion(regionX, regionZ);
-        this.level.timings.syncChunkLoadDataTimer.startTiming();
         BaseFullChunk chunk;
         try {
             chunk = region.readChunk(chunkX - regionX * 32, chunkZ - regionZ * 32);
@@ -224,7 +224,6 @@ public class Anvil extends BaseLevelProvider {
         } else {
             putChunk(index, chunk);
         }
-        this.level.timings.syncChunkLoadDataTimer.stopTiming();
         return chunk;
     }
 
@@ -232,17 +231,19 @@ public class Anvil extends BaseLevelProvider {
     public synchronized void saveChunk(int X, int Z) {
         BaseFullChunk chunk = this.getChunk(X, Z);
         if (chunk != null) {
-            try {
-                this.loadRegion(X >> 5, Z >> 5).writeChunk(chunk);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            Server.getInstance().getScheduler().scheduleAsyncTask(() -> {
+                try {
+                    this.loadRegion(X >> 5, Z >> 5).writeChunk(chunk);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
 
     @Override
-    public synchronized void saveChunk(int x, int z, FullChunk chunk) {
+    public synchronized void saveChunk(int x, int z, FullChunk chunk) throws Exception {
         if (!(chunk instanceof Chunk)) {
             throw new ChunkException("Invalid Chunk class");
         }
@@ -251,11 +252,7 @@ public class Anvil extends BaseLevelProvider {
         this.loadRegion(regionX, regionZ);
         chunk.setX(x);
         chunk.setZ(z);
-        try {
-            this.getRegion(regionX, regionZ).writeChunk(chunk);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.getRegion(regionX, regionZ).writeChunk(chunk);
     }
 
     public static ChunkSection createChunkSection(int y) {

@@ -4,6 +4,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Rail;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Created by Snake1999 on 2016/1/11.
@@ -35,7 +36,14 @@ public class BlockRailPowered extends BlockRail {
     }
 
     @Override
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         // Warning: I din't recommended this on slow networks server or slow client
         //          Network below 86Kb/s. This will became unresponsive to clients 
         //          When updating the block state. Espicially on the world with many rails. 

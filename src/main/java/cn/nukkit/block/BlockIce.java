@@ -4,6 +4,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.BlockColor;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * author: MagicDroidX
@@ -51,7 +52,14 @@ public class BlockIce extends BlockTransparent {
     }
 
     @Override
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
                 this.getLevel().setBlock(this, new BlockWater(), true);

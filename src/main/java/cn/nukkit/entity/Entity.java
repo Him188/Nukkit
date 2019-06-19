@@ -12,10 +12,7 @@ import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.EnumLevel;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Position;
+import cn.nukkit.level.*;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.*;
 import cn.nukkit.metadata.MetadataValue;
@@ -155,8 +152,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
 
     public boolean closed = false;
 
-    protected Timing timing;
-
     protected boolean isPlayer = false;
 
     public float getHeight() {
@@ -218,6 +213,9 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             return;
         }
 
+        if (this instanceof ChunkLoader) {
+            level.registerChunkLoader((ChunkLoader) this, this.getChunkX(), this.getChunkZ());
+        }
         this.init(chunk, nbt);
     }
 
@@ -259,8 +257,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         if ((chunk == null || chunk.getProvider() == null)) {
             throw new ChunkException("Invalid garbage Chunk given to Entity");
         }
-
-        this.timing = Timings.getEntityTiming(this);
 
         this.isPlayer = this instanceof Player;
         this.temporalVector = new Vector3();
@@ -336,8 +332,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
 
         this.lastUpdate = this.server.getTick();
         this.server.getPluginManager().callEvent(new EntitySpawnEvent(this));
-
-        this.scheduleUpdate();
     }
 
     public boolean hasCustomName() {
@@ -1206,6 +1200,9 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         return BlockFace.fromHorizontalIndex(NukkitMath.floorDouble((this.yaw * 4.0F / 360.0F) + 0.5D) & 3);
     }
 
+    /**
+     *
+     */
     public boolean onUpdate(int currentTick) {
         if (this.closed) {
             return false;

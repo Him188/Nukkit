@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Created by Pub4Game on 26.12.2015.
@@ -28,7 +29,14 @@ public class BlockWallSign extends BlockSignPost {
     }
 
     @Override
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         int[] faces = {
                 3,
                 2,

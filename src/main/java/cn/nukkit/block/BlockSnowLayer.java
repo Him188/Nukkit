@@ -8,6 +8,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Created on 2015/12/6 by xtypr.
@@ -77,7 +78,14 @@ public class BlockSnowLayer extends BlockFallable {
     }
 
     @Override
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         super.onUpdate(type);
         if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 10) {

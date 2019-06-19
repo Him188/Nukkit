@@ -51,7 +51,12 @@ public class EntityHuman extends EntityHumanType implements EntityJumpable {
     }
 
     @Override
-    public float getJumpHeight() {
+    public float getMaxJumpHeight() {
+        return 1;
+    }
+
+    @Override
+    public float getJumpPulseRate() {
         return 1;
     }
 

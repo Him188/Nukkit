@@ -119,7 +119,6 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         if (this.getProvider() != null && !this.isInit) {
             boolean changed = false;
             if (this.NBTentities != null) {
-                this.getProvider().getLevel().timings.syncChunkLoadEntitiesTimer.startTiming();
                 for (CompoundTag nbt : NBTentities) {
                     if (!nbt.contains("id")) {
                         this.setChanged();
@@ -135,12 +134,10 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
                         changed = true;
                     }
                 }
-                this.getProvider().getLevel().timings.syncChunkLoadEntitiesTimer.stopTiming();
                 this.NBTentities = null;
             }
 
             if (this.NBTtiles != null) {
-                this.getProvider().getLevel().timings.syncChunkLoadBlockEntitiesTimer.startTiming();
                 for (CompoundTag nbt : NBTtiles) {
                     if (nbt != null) {
                         if (!nbt.contains("id")) {
@@ -157,7 +154,6 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
                         }
                     }
                 }
-                this.getProvider().getLevel().timings.syncChunkLoadBlockEntitiesTimer.stopTiming();
                 this.NBTtiles = null;
             }
 

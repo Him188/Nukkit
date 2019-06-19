@@ -5,6 +5,8 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
+import org.intellij.lang.annotations.MagicConstant;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,11 @@ public abstract class Generator implements BlockID {
 
     public abstract int getId();
 
+    @MagicConstant(intValues = {
+            Level.DIMENSION_OVERWORLD,
+            Level.DIMENSION_NETHER,
+            Level.DIMENSION_THE_END
+    })
     public int getDimension() {
         return Level.DIMENSION_OVERWORLD;
     }

@@ -58,7 +58,6 @@ public class EntityEnderPearl extends EntityProjectile {
             return false;
         }
 
-        this.timing.startTiming();
 
         boolean hasUpdate = super.onUpdate(currentTick);
 
@@ -71,7 +70,6 @@ public class EntityEnderPearl extends EntityProjectile {
             hasUpdate = true;
         }
 
-        this.timing.stopTiming();
 
         return hasUpdate;
     }

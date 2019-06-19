@@ -65,6 +65,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.security.Key;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -152,7 +153,7 @@ public class Level implements ChunkManager, Metadatable {
 
 
     /**
-     * Chunk 使用者
+     * Chunk 使用者. 是 {@link #playerLoaders} 和 {@link #chunkLoaders} 的和
      */
     private final Int2ObjectOpenHashMap<ChunkLoader> loaders = new Int2ObjectOpenHashMap<>();
 
@@ -229,8 +230,6 @@ public class Level implements ChunkManager, Metadatable {
 
     private static final int LCG_CONSTANT = 1013904223;
 
-    public LevelTimings timings;
-
     private int tickRate;
     public int tickRateTime = 0;
     public int tickRateCounter = 0;
@@ -284,8 +283,6 @@ public class Level implements ChunkManager, Metadatable {
         } catch (Exception e) {
             throw new LevelException("Caused by " + Utils.getExceptionMessage(e));
         }
-
-        this.timings = new LevelTimings(this);
 
         if (convert) {
             this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.updating",
@@ -721,7 +718,6 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void doTick(int currentTick) {
-        this.timings.doTick.startTiming();
 
         updateBlockLight(lightQueue);
         this.checkTime();
@@ -757,16 +753,10 @@ public class Level implements ChunkManager, Metadatable {
             if (this.isThundering()) {
                 Map<Long, ? extends FullChunk> chunks = getChunks();
                 if (chunks instanceof Long2ObjectOpenHashMap) {
-                    Long2ObjectOpenHashMap<? extends FullChunk> fastChunks = (Long2ObjectOpenHashMap) chunks;
-                    ObjectIterator<? extends Long2ObjectMap.Entry<? extends FullChunk>> iter = fastChunks.long2ObjectEntrySet().fastIterator();
-                    while (iter.hasNext()) {
-                        Long2ObjectMap.Entry<? extends FullChunk> entry = iter.next();
-                        performThunder(entry.getLongKey(), entry.getValue());
-                    }
+                    //noinspection unchecked
+                    ((Long2ObjectOpenHashMap<? extends FullChunk>) chunks).long2ObjectEntrySet().fastForEach(entry -> performThunder(entry.getLongKey(), entry.getValue()));
                 } else {
-                    for (Map.Entry<Long, ? extends FullChunk> entry : getChunks().entrySet()) {
-                        performThunder(entry.getKey(), entry.getValue());
-                    }
+                    getChunks().forEach(this::performThunder);
                 }
             }
         }
@@ -776,20 +766,16 @@ public class Level implements ChunkManager, Metadatable {
         this.levelCurrentTick++;
 
         this.unloadChunks();
-        this.timings.doTickPending.startTiming();
 
         int polled = 0;
 
         this.updateQueue.tick(this.getCurrentTick());
-        this.timings.doTickPending.stopTiming();
 
         Block block;
         while ((block = this.normalUpdateQueue.poll()) != null) {
             block.onUpdate(BLOCK_UPDATE_NORMAL);
         }
 
-        TimingsHistory.entityTicks += this.updateEntities.size();
-        this.timings.entityTick.startTiming();
 
         if (!this.updateEntities.isEmpty()) {
             for (long id : this.updateEntities.keySet()) {
@@ -803,16 +789,11 @@ public class Level implements ChunkManager, Metadatable {
                 }
             }
         }
-        this.timings.entityTick.stopTiming();
 
         TimingsHistory.tileEntityTicks += this.updateBlockEntities.size();
-        this.timings.blockEntityTick.startTiming();
         this.updateBlockEntities.removeIf(blockEntity -> !blockEntity.isValid() || !blockEntity.onUpdate());
-        this.timings.blockEntityTick.stopTiming();
 
-        this.timings.tickChunks.startTiming();
         this.tickChunks();
-        this.timings.tickChunks.stopTiming();
 
         synchronized (changedBlocks) {
             if (!this.changedBlocks.isEmpty()) {
@@ -873,8 +854,6 @@ public class Level implements ChunkManager, Metadatable {
             Server.broadcastPacket(players.values().toArray(new Player[0]), packet);
             gameRules.refresh();
         }
-
-        this.timings.doTick.stopTiming();
     }
 
     private void performThunder(long index, FullChunk chunk) {
@@ -2614,7 +2593,6 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     private void processChunkRequest() {
-        this.timings.syncChunkSendTimer.startTiming();
         for (long index : this.chunkSendQueue.keySet()) {
             if (this.chunkSendTasks.contains(index)) {
                 continue;
@@ -2630,18 +2608,14 @@ public class Level implements ChunkManager, Metadatable {
                     continue;
                 }
             }
-            this.timings.syncChunkSendPrepareTimer.startTiming();
             AsyncTask task = this.provider.requestChunkTask(x, z);
             if (task != null) {
                 this.server.getScheduler().scheduleAsyncTask(task);
             }
-            this.timings.syncChunkSendPrepareTimer.stopTiming();
         }
-        this.timings.syncChunkSendTimer.stopTiming();
     }
 
     public void chunkRequestCallback(long timestamp, int x, int z, byte[] payload) {
-        this.timings.syncChunkSendTimer.startTiming();
         long index = Level.chunkHash(x, z);
 
         if (this.cacheChunks) {
@@ -2651,7 +2625,6 @@ public class Level implements ChunkManager, Metadatable {
                 chunk.setChunkPacket(data);
             }
             this.sendChunk(x, z, index, data);
-            this.timings.syncChunkSendTimer.stopTiming();
             return;
         }
 
@@ -2665,7 +2638,6 @@ public class Level implements ChunkManager, Metadatable {
             this.chunkSendQueue.remove(index);
             this.chunkSendTasks.remove(index);
         }
-        this.timings.syncChunkSendTimer.stopTiming();
     }
 
     public void removeEntity(Entity entity) {
@@ -2719,11 +2691,11 @@ public class Level implements ChunkManager, Metadatable {
 
     public boolean isChunkInUse(int x, int z) {
         long hash = Level.chunkHash(x, z);
-        return this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty() && !this.hasPlayerNearByChunk(x, z);
+        return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || this.hasLoaderNearByChunk(x, z);
     }
 
     public boolean isChunkInUse(long hash) {
-        return this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty() && !this.hasPlayerNearByChunk(Level.getHashX(hash), Level.getHashZ(hash));
+        return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || !this.hasLoaderNearByChunk(Level.getHashX(hash), Level.getHashZ(hash));
     }
 
     /**
@@ -2731,21 +2703,12 @@ public class Level implements ChunkManager, Metadatable {
      *
      * @return 这个 chunk 附近是否有 player
      */
-    public boolean hasPlayerNearByChunk(long x, long z) {
-        AtomicBoolean keep = new AtomicBoolean(false);
-        this.playerLoaders.values().stream()
-                .flatMap(map -> map.values().stream())
-                .forEach(player -> {
-                    if (keep.get()) {
-                        return;
-                    }
-                    if (player != null && player.chunk != null && Math.abs(player.chunk.getX() - x) + Math.abs(player.chunk.getZ() - z) <= player.getKeepChunkLoadRange()) {
-                        keep.set(true);
-                    }
-                });
-
-        return keep.get();
-
+    public boolean hasLoaderNearByChunk(long x, long z) {
+        return this.loaders.values()
+                .stream()
+                .filter(Entity.class::isInstance)
+                .map(Entity.class::cast)
+                .anyMatch(entity -> entity.chunk != null && Math.sqrt(Math.pow(entity.chunk.getX() - x, 2) + Math.pow(entity.chunk.getZ() - z, 2)) <= ((ChunkLoader) entity).getKeepChunkLoadRange());
     }
 
     public boolean loadChunk(int x, int z) {
@@ -2838,15 +2801,12 @@ public class Level implements ChunkManager, Metadatable {
             return true;
         }
 
-        this.timings.doChunkUnload.startTiming();
-
         BaseFullChunk chunk = this.getChunk(x, z);
 
         if (chunk != null && chunk.getProvider() != null) {
             ChunkUnloadEvent ev = new ChunkUnloadEvent(chunk);
             this.server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
-                this.timings.doChunkUnload.stopTiming();
                 return false;
             }
         }
@@ -2877,8 +2837,6 @@ public class Level implements ChunkManager, Metadatable {
             logger.error(this.server.getLanguage().translateString("nukkit.level.chunkUnloadError", e.toString()));
             logger.logException(e);
         }
-
-        this.timings.doChunkUnload.stopTiming();
 
         return true;
     }
@@ -3061,7 +3019,6 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void doChunkGarbageCollection() {
-        this.timings.doChunkGC.startTiming();
         // remove all invaild block entities.
         if (!blockEntities.isEmpty()) {
             ObjectIterator<BlockEntity> iter = blockEntities.values().iterator();
@@ -3091,7 +3048,6 @@ public class Level implements ChunkManager, Metadatable {
         }
 
         this.provider.doGarbageCollection();
-        this.timings.doChunkGC.stopTiming();
     }
 
     public void doGarbageCollection(long allocatedTime) {
@@ -3195,7 +3151,7 @@ public class Level implements ChunkManager, Metadatable {
             }
 
             if (toUnload != null) {
-                long[] arr = (long[]) toUnload.toLongArray();
+                long[] arr = toUnload.toLongArray();
                 for (long index : arr) {
                     int X = getHashX(index);
                     int Z = getHashZ(index);
@@ -3496,53 +3452,53 @@ public class Level implements ChunkManager, Metadatable {
         return (this.updateLCG = (this.updateLCG * 3) ^ LCG_CONSTANT);
     }
 
-//    private static void orderGetRidings(Entity entity, LongSet set) {
-//        if (entity.riding != null) {
-//            if(!set.add(entity.riding.getId())) {
-//                throw new RuntimeException("Circular entity link detected (id = "+entity.riding.getId()+")");
-//            }
-//            orderGetRidings(entity.riding, set);
-//        }
-//    }
-//
-//    public List<Entity> orderChunkEntitiesForSpawn(int chunkX, int chunkZ) {
-//        return orderChunkEntitiesForSpawn(getChunk(chunkX, chunkZ, false));
-//    }
-//
-//    public List<Entity> orderChunkEntitiesForSpawn(BaseFullChunk chunk) {
-//        Comparator<Entity> comparator = (o1, o2) -> {
-//            if (o1.riding == null) {
-//                if(o2 == null) {
-//                    return 0;
-//                }
-//
-//                return -1;
-//            }
-//
-//            if (o2.riding == null) {
-//                return 1;
-//            }
-//
-//            LongSet ridings = new LongOpenHashSet();
-//            orderGetRidings(o1, ridings);
-//
-//            if(ridings.contains(o2.getId())) {
-//                return 1;
-//            }
-//
-//            ridings.clear();
-//            orderGetRidings(o2, ridings);
-//
-//            if(ridings.contains(o1.getId())) {
-//                return -1;
-//            }
-//
-//            return 0;
-//        };
-//
-//        List<Entity> sorted = new ArrayList<>(chunk.getEntities().values());
-//        sorted.sort(comparator);
-//
-//        return sorted;
-//    }
+    //    private static void orderGetRidings(Entity entity, LongSet set) {
+    //        if (entity.riding != null) {
+    //            if(!set.add(entity.riding.getId())) {
+    //                throw new RuntimeException("Circular entity link detected (id = "+entity.riding.getId()+")");
+    //            }
+    //            orderGetRidings(entity.riding, set);
+    //        }
+    //    }
+    //
+    //    public List<Entity> orderChunkEntitiesForSpawn(int chunkX, int chunkZ) {
+    //        return orderChunkEntitiesForSpawn(getChunk(chunkX, chunkZ, false));
+    //    }
+    //
+    //    public List<Entity> orderChunkEntitiesForSpawn(BaseFullChunk chunk) {
+    //        Comparator<Entity> comparator = (o1, o2) -> {
+    //            if (o1.riding == null) {
+    //                if(o2 == null) {
+    //                    return 0;
+    //                }
+    //
+    //                return -1;
+    //            }
+    //
+    //            if (o2.riding == null) {
+    //                return 1;
+    //            }
+    //
+    //            LongSet ridings = new LongOpenHashSet();
+    //            orderGetRidings(o1, ridings);
+    //
+    //            if(ridings.contains(o2.getId())) {
+    //                return 1;
+    //            }
+    //
+    //            ridings.clear();
+    //            orderGetRidings(o2, ridings);
+    //
+    //            if(ridings.contains(o1.getId())) {
+    //                return -1;
+    //            }
+    //
+    //            return 0;
+    //        };
+    //
+    //        List<Entity> sorted = new ArrayList<>(chunk.getEntities().values());
+    //        sorted.sort(comparator);
+    //
+    //        return sorted;
+    //    }
 }

@@ -5,5 +5,7 @@ package cn.nukkit.entity;
  */
 public interface EntityJumpable extends IEntity {
 
-    float getJumpHeight();
+    float getMaxJumpHeight();
+
+    float getJumpPulseRate();
 }

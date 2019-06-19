@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Created by CreeperFace on 2.6.2017.
@@ -59,7 +60,14 @@ public class BlockConcretePowder extends BlockFallable {
     }
     
     @Override
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK}) int type) {
         super.onUpdate(Level.BLOCK_UPDATE_NORMAL); //#BlockFallable
         if(type == Level.BLOCK_UPDATE_NORMAL){
             for(int side = 1; side <= 5; side++){

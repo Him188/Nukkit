@@ -137,7 +137,6 @@ public class EntityThrownTrident extends EntityProjectile {
             return false;
         }
 
-        this.timing.startTiming();
 
         if (this.isCollided && !this.hadCollision) {
             this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_ITEM_TRIDENT_HIT_GROUND);
@@ -154,7 +153,6 @@ public class EntityThrownTrident extends EntityProjectile {
             hasUpdate = true;
         }
 
-        this.timing.stopTiming();
 
         return hasUpdate;
     }

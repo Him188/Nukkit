@@ -145,7 +145,6 @@ public class EntityPotion extends EntityProjectile {
             return false;
         }
 
-        this.timing.startTiming();
 
         boolean hasUpdate = super.onUpdate(currentTick);
 
@@ -157,7 +156,6 @@ public class EntityPotion extends EntityProjectile {
             hasUpdate = true;
         }
 
-        this.timing.stopTiming();
         return hasUpdate;
     }
 }

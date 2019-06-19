@@ -18,6 +18,7 @@ import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
+import org.intellij.lang.annotations.MagicConstant;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -255,7 +256,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[PURPUR_BLOCK] = BlockPurpur.class; //201
 
             list[PURPUR_STAIRS] = BlockStairsPurpur.class; //203
-            
+
             list[UNDYED_SHULKER_BOX] = BlockUndyedShulkerBox.class; //205
             list[END_BRICKS] = BlockBricksEndStone.class; //206
 
@@ -412,7 +413,15 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         return this.getLevel().setBlock(this, new BlockAir(), true, true);
     }
 
-    public int onUpdate(int type) {
+    public int onUpdate(@MagicConstant(intValues = {
+            Level.BLOCK_UPDATE_NORMAL,
+            Level.BLOCK_UPDATE_RANDOM,
+            Level.BLOCK_UPDATE_SCHEDULED,
+            Level.BLOCK_UPDATE_WEAK,
+            Level.BLOCK_UPDATE_TOUCH,
+            Level.BLOCK_UPDATE_REDSTONE,
+            Level.BLOCK_UPDATE_TICK
+    }) int type) {
         return 0;
     }
 
@@ -510,6 +519,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
     /**
      * The full id is a combination of the id and data.
+     *
      * @return full id
      */
     public int getFullId() {
@@ -590,11 +600,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
     private static boolean correctTool0(int blockToolType, Item item) {
         return (blockToolType == ItemTool.TYPE_SWORD && item.isSword()) ||
-                (blockToolType == ItemTool.TYPE_SHOVEL && item.isShovel()) ||
-                (blockToolType == ItemTool.TYPE_PICKAXE && item.isPickaxe()) ||
-                (blockToolType == ItemTool.TYPE_AXE && item.isAxe()) ||
-                (blockToolType == ItemTool.TYPE_SHEARS && item.isShears()) ||
-                blockToolType == ItemTool.TYPE_NONE;
+               (blockToolType == ItemTool.TYPE_SHOVEL && item.isShovel()) ||
+               (blockToolType == ItemTool.TYPE_PICKAXE && item.isPickaxe()) ||
+               (blockToolType == ItemTool.TYPE_AXE && item.isAxe()) ||
+               (blockToolType == ItemTool.TYPE_SHEARS && item.isShears()) ||
+               blockToolType == ItemTool.TYPE_NONE;
     }
 
     //http://minecraft.gamepedia.com/Breaking
@@ -626,17 +636,19 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         int hasteEffectLevel = Optional.ofNullable(player.getEffect(Effect.HASTE))
                 .map(Effect::getAmplifier).orElse(0);
         boolean insideOfWaterWithoutAquaAffinity = player.isInsideOfWater() &&
-                Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER))
-                        .map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
+                                                   Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER))
+                                                           .map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
         boolean outOfWaterButNotOnGround = (!player.isInsideOfWater()) && (!player.isOnGround());
         return breakTime0(blockHardness, correctTool, canHarvestWithHand, blockId, itemToolType, itemTier,
                 efficiencyLoreLevel, hasteEffectLevel, insideOfWaterWithoutAquaAffinity, outOfWaterButNotOnGround);
     }
 
     /**
-     * @deprecated This function is lack of Player class and is not accurate enough, use #getBreakTime(Item, Player)
      * @param item item used
+     *
      * @return break time
+     *
+     * @deprecated This function is lack of Player class and is not accurate enough, use #getBreakTime(Item, Player)
      */
     @Deprecated
     public double getBreakTime(Item item) {
@@ -646,9 +658,9 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                 base /= 15;
             } else if (
                     (this.getToolType() == ItemTool.TYPE_PICKAXE && item.isPickaxe()) ||
-                            (this.getToolType() == ItemTool.TYPE_AXE && item.isAxe()) ||
-                            (this.getToolType() == ItemTool.TYPE_SHOVEL && item.isShovel())
-                    ) {
+                    (this.getToolType() == ItemTool.TYPE_AXE && item.isAxe()) ||
+                    (this.getToolType() == ItemTool.TYPE_SHOVEL && item.isShovel())
+            ) {
                 int tier = item.getTier();
                 switch (tier) {
                     case ItemTool.TIER_WOODEN:

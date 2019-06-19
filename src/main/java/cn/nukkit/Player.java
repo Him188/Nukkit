@@ -1779,8 +1779,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @return Entity|null    either NULL if no entity is found or an instance of the entity
      */
     public EntityInteractable getEntityPlayerLookingAt(int maxDistance) {
-        timing.startTiming();
-
         EntityInteractable entity = null;
 
         // just a fix because player MAY not be fully initialized
@@ -1804,8 +1802,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 // nothing to log here!
             }
         }
-
-        timing.stopTiming();
 
         return entity;
     }

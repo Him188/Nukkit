@@ -51,7 +51,6 @@ public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityE
 
     @Override
     public boolean onUpdate(int currentTick) {
-        this.timing.startTiming();
 
         // Todo: Check why the TNT doesn't want to tick
         if (activated || fuse < 80) {
@@ -75,7 +74,6 @@ public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityE
             Server.getInstance().getLogger().info("Debug:" + fuse);
         }
 
-        this.timing.stopTiming();
 
         return super.onUpdate(currentTick);
     }
