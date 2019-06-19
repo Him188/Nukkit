@@ -213,10 +213,11 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             return;
         }
 
+        this.init(chunk, nbt);
+
         if (this instanceof ChunkLoader) {
             level.registerChunkLoader((ChunkLoader) this, this.getChunkX(), this.getChunkZ());
         }
-        this.init(chunk, nbt);
     }
 
     public static Entity createEntity(int type, Position pos, Object... args) {

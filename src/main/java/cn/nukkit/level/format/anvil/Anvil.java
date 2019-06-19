@@ -243,7 +243,7 @@ public class Anvil extends BaseLevelProvider {
 
 
     @Override
-    public synchronized void saveChunk(int x, int z, FullChunk chunk) throws Exception {
+    public synchronized void saveChunk(int x, int z, FullChunk chunk) {
         if (!(chunk instanceof Chunk)) {
             throw new ChunkException("Invalid Chunk class");
         }
@@ -252,7 +252,11 @@ public class Anvil extends BaseLevelProvider {
         this.loadRegion(regionX, regionZ);
         chunk.setX(x);
         chunk.setZ(z);
-        this.getRegion(regionX, regionZ).writeChunk(chunk);
+        try {
+            this.getRegion(regionX, regionZ).writeChunk(chunk);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static ChunkSection createChunkSection(int y) {
