@@ -66,8 +66,6 @@ import cn.nukkit.resourcepacks.ResourcePack;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.*;
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -794,7 +792,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        Timings.playerChunkSendTimer.startTiming();
 
         if (!loadQueue.isEmpty()) {
             int count = 0;
@@ -834,7 +831,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (this.chunkLoadCount >= this.spawnThreshold && !this.spawned && this.teleportPosition == null) {
             this.doFirstSpawn();
         }
-        Timings.playerChunkSendTimer.stopTiming();
     }
 
     protected void doFirstSpawn() {
@@ -943,7 +939,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return false;
         }
 
-        Timings.playerChunkOrderTimer.startTiming();
 
         this.nextChunkOrderRun = 200;
 
@@ -1023,7 +1018,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.dataPacket(packet);
         }
 
-        Timings.playerChunkOrderTimer.stopTiming();
         return true;
     }
 
@@ -1032,7 +1026,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return false;
         }
 
-        try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent event = new DataPacketSendEvent(this, packet);
             this.server.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
@@ -1044,7 +1037,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             this.batchedPackets.get(packet.getChannel()).add(packet.clone());
-        }
         return true;
     }
 
@@ -1066,7 +1058,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return -1;
         }
 
-        try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
             this.server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
@@ -1079,7 +1070,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.needACK.put(identifier, Boolean.FALSE);
                 return identifier;
             }
-        }
         return 0;
     }
 
@@ -1101,7 +1091,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return -1;
         }
 
-        try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
             this.server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
@@ -1114,7 +1103,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.needACK.put(identifier, Boolean.FALSE);
                 return identifier;
             }
-        }
         return 0;
     }
 
@@ -2073,7 +2061,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        try (Timing timing = Timings.getReceiveDataPacketTiming(packet)) {
             DataPacketReceiveEvent ev = new DataPacketReceiveEvent(this, packet);
             this.server.getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
@@ -2729,9 +2716,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         break;
                     }
 
-                    Timings.playerCommandTimer.startTiming();
                     this.server.dispatchCommand(playerCommandPreprocessEvent.getPlayer(), playerCommandPreprocessEvent.getMessage().substring(1));
-                    Timings.playerCommandTimer.stopTiming();
                     break;
                 case ProtocolInfo.TEXT_PACKET:
                     if (!this.spawned || !this.isAlive()) {
@@ -3263,7 +3248,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 default:
                     break;
             }
-        }
     }
 
     /**

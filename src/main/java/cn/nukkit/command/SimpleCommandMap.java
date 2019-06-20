@@ -252,7 +252,6 @@ public class SimpleCommandMap implements CommandMap {
             return false;
         }
 
-        target.timing.startTiming();
         try {
             target.execute(sender, sentCommandLabel, args);
         } catch (Exception e) {
@@ -263,7 +262,6 @@ public class SimpleCommandMap implements CommandMap {
                 logger.logException(e);
             }
         }
-        target.timing.stopTiming();
 
         return true;
     }

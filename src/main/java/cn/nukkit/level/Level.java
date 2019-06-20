@@ -50,10 +50,7 @@ import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.scheduler.BlockUpdateScheduler;
-import cn.nukkit.timings.LevelTimings;
 import cn.nukkit.utils.*;
-import co.aikar.timings.Timings;
-import co.aikar.timings.TimingsHistory;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -65,10 +62,8 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.security.Key;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * author: MagicDroidX Nukkit Project
@@ -790,7 +785,6 @@ public class Level implements ChunkManager, Metadatable {
             }
         }
 
-        TimingsHistory.tileEntityTicks += this.updateBlockEntities.size();
         this.updateBlockEntities.removeIf(blockEntity -> !blockEntity.isValid() || !blockEntity.onUpdate());
 
         this.tickChunks();
@@ -2411,7 +2405,6 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void generateChunkCallback(int x, int z, BaseFullChunk chunk) {
-        Timings.generationCallbackTimer.startTiming();
         long index = Level.chunkHash(x, z);
         if (this.chunkPopulationQueue.containsKey(index)) {
             FullChunk oldChunk = this.getChunk(x, z, false);
@@ -2441,7 +2434,6 @@ public class Level implements ChunkManager, Metadatable {
             chunk.setProvider(this.provider);
             this.setChunk(x, z, chunk, false);
         }
-        Timings.generationCallbackTimer.stopTiming();
     }
 
     @Override
@@ -2956,7 +2948,6 @@ public class Level implements ChunkManager, Metadatable {
         BaseFullChunk chunk = this.getChunk(x, z, true);
         boolean populate;
         if (!chunk.isPopulated()) {
-            Timings.populationTimer.startTiming();
             populate = true;
             for (int xx = -1; xx <= 1; ++xx) {
                 for (int zz = -1; zz <= 1; ++zz) {
@@ -2981,7 +2972,6 @@ public class Level implements ChunkManager, Metadatable {
                     this.server.getScheduler().scheduleAsyncTask(task);
                 }
             }
-            Timings.populationTimer.stopTiming();
             return false;
         }
 
@@ -2999,11 +2989,9 @@ public class Level implements ChunkManager, Metadatable {
 
         long index = Level.chunkHash(x, z);
         if (!this.chunkGenerationQueue.containsKey(index)) {
-            Timings.generationTimer.startTiming();
             this.chunkGenerationQueue.put(index, Boolean.TRUE);
             GenerationTask task = new GenerationTask(this, this.getChunk(x, z, true));
             this.server.getScheduler().scheduleAsyncTask(task);
-            Timings.generationTimer.stopTiming();
         }
     }
 

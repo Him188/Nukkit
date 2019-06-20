@@ -75,7 +75,6 @@ import cn.nukkit.scheduler.ServerScheduler;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.*;
 import cn.nukkit.utils.bugreport.ExceptionHandler;
-import co.aikar.timings.Timings;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.log4j.Log4j2;
@@ -669,7 +668,6 @@ public class Server {
             return;
         }
 
-        Timings.playerNetworkSendTimer.startTiming();
         byte[][] payload = new byte[packets.length * 2][];
         int size = 0;
         for (int i = 0; i < packets.length; i++) {
@@ -702,7 +700,6 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
-        Timings.playerNetworkSendTimer.stopTiming();
     }
 
     public void broadcastPacketsCallback(byte[] data, List<String> identifiers) {
@@ -796,7 +793,6 @@ public class Server {
         this.pluginManager.loadPlugins(this.pluginPath);
         this.enablePlugins(PluginLoadOrder.STARTUP);
         this.enablePlugins(PluginLoadOrder.POSTWORLD);
-        Timings.reset();
     }
 
     public void shutdown() {
@@ -850,7 +846,6 @@ public class Server {
             }
 
             this.getLogger().debug("Disabling timings");
-            Timings.stopServer();
             if (this.watchdog != null) {
                 this.watchdog.kill();
             }
@@ -1114,21 +1109,15 @@ public class Server {
             return false;
         }
 
-        Timings.fullServerTickTimer.startTiming();
 
         ++this.tickCounter;
 
-        Timings.connectionTimer.startTiming();
         this.network.processInterfaces();
 
         if (this.rcon != null) {
             this.rcon.check();
         }
-        Timings.connectionTimer.stopTiming();
-
-        Timings.schedulerTimer.startTiming();
         this.scheduler.mainThreadHeartbeat(this.tickCounter);
-        Timings.schedulerTimer.stopTiming();
 
         this.checkTickUpdates(this.tickCounter, tickTime);
 
@@ -1172,7 +1161,6 @@ public class Server {
             }
         }
 
-        Timings.fullServerTickTimer.stopTiming();
         //long now = System.currentTimeMillis();
         long nowNano = System.nanoTime();
         //float tick = Math.min(20, 1000 / Math.max(1, now - tickTime));

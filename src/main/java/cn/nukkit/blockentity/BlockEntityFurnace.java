@@ -221,7 +221,6 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
             return false;
         }
 
-        this.timing.startTiming();
 
         boolean ret = false;
         Item fuel = this.inventory.getFuel();
@@ -293,7 +292,6 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
 
         this.lastUpdate = System.currentTimeMillis();
 
-        this.timing.stopTiming();
 
         return ret;
     }

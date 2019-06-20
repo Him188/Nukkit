@@ -28,8 +28,6 @@ import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.ChunkException;
 import cn.nukkit.utils.MainLogger;
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.google.common.collect.Iterables;
 
 import java.lang.reflect.Constructor;
@@ -1596,7 +1594,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             return true;
         }
 
-        Timings.entityMoveTimer.startTiming();
 
         AxisAlignedBB newBB = this.boundingBox.getOffsetBoundingBox(dx, dy, dz);
 
@@ -1618,7 +1615,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         }
         this.isCollided = this.onGround;
         this.updateFallState(this.onGround);
-        Timings.entityMoveTimer.stopTiming();
         return true;
     }
 
@@ -1634,7 +1630,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             return true;
         } else {
 
-            Timings.entityMoveTimer.startTiming();
 
             this.ySize *= 0.4;
 
@@ -1733,7 +1728,6 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             }
 
             //TODO: vehicle collision events (first we need to spawn them!)
-            Timings.entityMoveTimer.stopTiming();
             return true;
         }
     }
