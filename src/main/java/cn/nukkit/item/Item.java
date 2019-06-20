@@ -1020,8 +1020,46 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
 
         tag.put(name, value);
+        this.setNamedTag(tag);
         return this;
     }
+
+    public Item setNamedTagEntry(String name, String value) {
+        return this.setNamedTagEntry(name, new StringTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, int value) {
+        return this.setNamedTagEntry(name, new IntTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, byte value) {
+        return this.setNamedTagEntry(name, new ByteTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, long value) {
+        return this.setNamedTagEntry(name, new LongTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, double value) {
+        return this.setNamedTagEntry(name, new DoubleTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, float value) {
+        return this.setNamedTagEntry(name, new FloatTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, short value) {
+        return this.setNamedTagEntry(name, new ShortTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, byte[] value) {
+        return this.setNamedTagEntry(name, new ByteArrayTag(name, value));
+    }
+
+    public Item setNamedTagEntry(String name, int[] value) {
+        return this.setNamedTagEntry(name, new IntArrayTag(name, value));
+    }
+
 
     @Override
     final public String toString() {
