@@ -836,6 +836,39 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         }
     }
 
+    /**
+     * 向前冲刺
+     *
+     * @param distanceCoefficient 距离系数.
+     */
+    public void sprint(int distanceCoefficient) {
+        double yaw = this.yaw;
+        if (0.0 <= yaw && yaw <= 90.0) {
+            motionX = -distanceCoefficient * (yaw / 90.0);
+            motionZ = distanceCoefficient * ((90.0 - yaw) / 90.0);
+        } else if (90.0 < yaw && yaw <= 180.0) {
+            yaw = yaw % 90.0;
+            motionX = -distanceCoefficient * ((90.0 - yaw) / 90.0);
+            motionZ = -distanceCoefficient * (yaw / 90.0);
+        } else if (180.0 < yaw && yaw <= 270.0) {
+            yaw = yaw % 90.0;
+            motionX = distanceCoefficient * (yaw / 90.0);
+            motionZ = -distanceCoefficient * ((90.0 - yaw) / 90.0);
+        } else if (270.0 < yaw && yaw <= 360.0) {
+            yaw = yaw % 90.0;
+            motionX = distanceCoefficient * ((90.0 - yaw) / 90.0);
+            motionZ = distanceCoefficient * (yaw / 90.0);
+        }
+
+        if (pitch < 0.0) {
+            motionY = distanceCoefficient * (-1.0 * pitch / 90.0);
+        }
+        if (pitch > 0.0) {
+            motionY = distanceCoefficient * (-1.0 * pitch / 90.0);
+        }
+        this.move(motionX, motionY, motionZ);
+    }
+
     public boolean attack(EntityDamageEvent source) {
         if (hasEffect(Effect.FIRE_RESISTANCE)
             && (source.getCause() == DamageCause.FIRE

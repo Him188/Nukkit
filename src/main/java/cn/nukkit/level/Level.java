@@ -2682,12 +2682,14 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public boolean isChunkInUse(int x, int z) {
-        long hash = Level.chunkHash(x, z);
-        return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || this.hasLoaderNearByChunk(x, z);
+        return true;
+        //long hash = Level.chunkHash(x, z);
+        //return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || this.hasLoaderNearByChunk(x, z);
     }
 
     public boolean isChunkInUse(long hash) {
-        return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || !this.hasLoaderNearByChunk(Level.getHashX(hash), Level.getHashZ(hash));
+        return true;
+        //return (this.chunkLoaders.containsKey(hash) && !this.chunkLoaders.get(hash).isEmpty()) || !this.hasLoaderNearByChunk(Level.getHashX(hash), Level.getHashZ(hash));
     }
 
     /**
