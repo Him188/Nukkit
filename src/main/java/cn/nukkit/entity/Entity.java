@@ -866,7 +866,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         if (pitch > 0.0) {
             motionY = distanceCoefficient * (-1.0 * pitch / 90.0);
         }
-        this.move(motionX, motionY, motionZ);
+        this.updateMovement();
     }
 
     public boolean attack(EntityDamageEvent source) {
