@@ -52,10 +52,7 @@ import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.scheduler.BlockUpdateScheduler;
 import cn.nukkit.utils.*;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
@@ -128,13 +125,13 @@ public class Level implements ChunkManager, Metadatable {
         randomTickBlocks[Block.COCOA_BLOCK] = true;
     }
 
-    private final Long2ObjectOpenHashMap<BlockEntity> blockEntities = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<BlockEntity> blockEntities = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    private final Long2ObjectOpenHashMap<Player> players = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<Player> players = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    private final Long2ObjectOpenHashMap<Entity> entities = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<Entity> entities = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    public final Long2ObjectOpenHashMap<Entity> updateEntities = new Long2ObjectOpenHashMap<>();
+    public final Long2ObjectMap<Entity> updateEntities = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
     private final ConcurrentLinkedQueue<BlockEntity> updateBlockEntities = new ConcurrentLinkedQueue<>();
 
@@ -150,21 +147,21 @@ public class Level implements ChunkManager, Metadatable {
     /**
      * Chunk 使用者. 是 {@link #playerLoaders} 和 {@link #chunkLoaders} 的和
      */
-    private final Int2ObjectOpenHashMap<ChunkLoader> loaders = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<ChunkLoader> loaders = Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>());
 
-    private final Int2IntMap loaderCounter = new Int2IntOpenHashMap();
+    private final Int2IntMap loaderCounter = Int2IntMaps.synchronize(new Int2IntOpenHashMap());
 
     /**
      * ChunkLoader 不为 Player 的 {@link #loaders}
      */
-    private final Long2ObjectOpenHashMap<Map<Integer, ChunkLoader>> chunkLoaders = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<Map<Integer, ChunkLoader>> chunkLoaders = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
     /**
      * ChunkLoader 为 Player 的 {@link #loaders}
      */
-    private final Long2ObjectOpenHashMap<Map<Integer, Player>> playerLoaders = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<Map<Integer, Player>> playerLoaders = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    private final Long2ObjectOpenHashMap<Deque<DataPacket>> chunkPackets = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<Deque<DataPacket>> chunkPackets = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
     private final Long2LongMap unloadQueue = Long2LongMaps.synchronize(new Long2LongOpenHashMap());
 
@@ -792,7 +789,7 @@ public class Level implements ChunkManager, Metadatable {
         synchronized (changedBlocks) {
             if (!this.changedBlocks.isEmpty()) {
                 if (!this.players.isEmpty()) {
-                    ObjectIterator<Long2ObjectMap.Entry<SoftReference<Map<Character, Object>>>> iter = changedBlocks.long2ObjectEntrySet().fastIterator();
+                    ObjectIterator<Long2ObjectMap.Entry<SoftReference<Map<Character, Object>>>> iter = ((Long2ObjectMap.FastEntrySet) changedBlocks.long2ObjectEntrySet()).fastIterator();
                     while (iter.hasNext()) {
                         Long2ObjectMap.Entry<SoftReference<Map<Character, Object>>> entry = iter.next();
                         long index = entry.getLongKey();
