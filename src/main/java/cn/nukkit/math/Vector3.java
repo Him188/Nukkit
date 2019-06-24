@@ -1,5 +1,9 @@
 package cn.nukkit.math;
 
+import cn.nukkit.entity.Entity;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
@@ -258,6 +262,7 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param x x value
+     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithXValue(Vector3 v, double x) {
@@ -281,6 +286,7 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param y y value
+     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithYValue(Vector3 v, double y) {
@@ -304,6 +310,7 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param z z value
+     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithZValue(Vector3 v, double z) {
@@ -360,6 +367,16 @@ public class Vector3 implements Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
+    }
+
+    public Vector3 asVector3() {
+        if (this.getClass() == Vector3.class
+            || this.getClass() == Position.class
+            || this.getClass() == Location.class) {
+            return this;
+        }
+
+        return new Vector3(x, y, z);
     }
 
     public Vector3f asVector3f() {

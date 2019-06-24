@@ -14,6 +14,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.NumberTag;
 import cn.nukkit.network.protocol.BatchPacket;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.io.IOException;
@@ -303,7 +304,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     @Override
     public void addEntity(Entity entity) {
         if (this.entities == null) {
-            this.entities = new Long2ObjectOpenHashMap<>();
+            this.entities = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
         }
         this.entities.put(entity.getId(), entity);
         if (!(entity instanceof Player) && this.isInit) {

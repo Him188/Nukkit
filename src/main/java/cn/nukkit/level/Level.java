@@ -161,7 +161,7 @@ public class Level implements ChunkManager, Metadatable {
      */
     private final Long2ObjectMap<Map<Integer, Player>> playerLoaders = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    private final Long2ObjectMap<Deque<DataPacket>> chunkPackets = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
+    private final Long2ObjectMap<Deque<DataPacket>> chunkPackets = new Long2ObjectOpenHashMap<>();
 
     private final Long2LongMap unloadQueue = Long2LongMaps.synchronize(new Long2LongOpenHashMap());
 
@@ -2217,6 +2217,9 @@ public class Level implements ChunkManager, Metadatable {
         for (int x = minX; x <= maxX; ++x) {
             for (int z = minZ; z <= maxZ; ++z) {
                 for (Entity ent : this.getChunkEntities(x, z, loadChunks).values()) {
+                    if (ent == null || ent.boundingBox == null) {
+                        continue;
+                    }
                     if (ent != entity && ent.boundingBox.intersectsWith(bb)) {
                         if (index < ENTITY_BUFFER.length) {
                             ENTITY_BUFFER[index] = ent;
