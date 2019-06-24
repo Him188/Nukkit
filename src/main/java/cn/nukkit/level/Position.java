@@ -115,6 +115,35 @@ public class Position extends Vector3 {
     }
 
     @Override
+    public Position addSelf(Vector3 x) {
+        this.x += x.getX();
+        this.y += x.getY();
+        this.z += x.getZ();
+        return this;
+    }
+
+    @Override
+    public Position addSelf(double x) {
+        this.x += x;
+        return this;
+    }
+
+    @Override
+    public Position addSelf(double x, double y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+
+    @Override
+    public Position addSelf(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
+    @Override
     public Position add(Vector3 x) {
         return new Position(this.x + x.getX(), this.y + x.getY(), this.z + x.getZ(), this.level);
     }

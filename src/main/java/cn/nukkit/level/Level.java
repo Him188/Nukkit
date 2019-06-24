@@ -257,6 +257,8 @@ public class Level implements ChunkManager, Metadatable {
 
     public GameRules gameRules;
 
+
+
     public Level(Server server, String name, String path, Class<? extends LevelProvider> provider) {
         this.levelId = levelIdCounter++;
         this.blockMetadata = new BlockMetadataStore(this);
@@ -2006,6 +2008,8 @@ public class Level implements ChunkManager, Metadatable {
     }
 
 
+    private transient long lastRightClickTime;
+
     public Item useItemOn(Vector3 vector, Item item, BlockFace face, float fx, float fy, float fz, Player player, boolean playSound) {
         Block target = this.getBlock(vector);
         Block block = target.getSide(face);
@@ -2035,7 +2039,11 @@ public class Level implements ChunkManager, Metadatable {
                 }
             }
 
-            this.server.getPluginManager().callEvent(ev);
+            if (System.currentTimeMillis() - this.lastRightClickTime > 2) {
+                this.lastRightClickTime = System.currentTimeMillis();
+                this.server.getPluginManager().callEvent(ev);
+            }
+
             if (!ev.isCancelled()) {
                 target.onUpdate(BLOCK_UPDATE_TOUCH);
                 if ((!player.isSneaking() || player.getInventory().getItemInHand().isNull()) && target.canBeActivated() && target.onActivate(item, player)) {

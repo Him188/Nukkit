@@ -17,6 +17,22 @@ public class MathHelper {
         return (float) Math.sqrt(paramFloat);
     }
 
+    public static double square(double paramDouble){
+        return paramDouble * paramDouble;
+    }
+
+    public static float square(float paramDouble){
+        return paramDouble * paramDouble;
+    }
+
+    public static int square(int paramDouble){
+        return paramDouble * paramDouble;
+    }
+
+    public static long square(long paramDouble){
+        return paramDouble * paramDouble;
+    }
+
     public static float sin(float paramFloat) {
         return a[((int) (paramFloat * 10430.378F) & 0xFFFF)];
     }

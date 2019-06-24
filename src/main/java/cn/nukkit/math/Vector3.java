@@ -1,6 +1,5 @@
 package cn.nukkit.math;
 
-import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 
@@ -94,6 +93,31 @@ public class Vector3 implements Cloneable {
 
     public Vector3 add(double x, double y, double z) {
         return new Vector3(this.x + x, this.y + y, this.z + z);
+    }
+
+    public Vector3 addSelf(Vector3 x) {
+        this.x += x.getX();
+        this.y += x.getY();
+        this.z += x.getZ();
+        return this;
+    }
+
+    public Vector3 addSelf(double x) {
+        this.x += x;
+        return this;
+    }
+
+    public Vector3 addSelf(double x, double y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+
+    public Vector3 addSelf(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
     }
 
     public Vector3 add(Vector3 x) {
@@ -205,7 +229,18 @@ public class Vector3 implements Cloneable {
     }
 
     public double distanceSquared(Vector3 pos) {
-        return Math.pow(this.x - pos.x, 2) + Math.pow(this.y - pos.y, 2) + Math.pow(this.z - pos.z, 2);
+        return MathHelper.square(this.x - pos.x) + MathHelper.square(this.y - pos.y) + MathHelper.square(this.z - pos.z);
+    }
+
+    /**
+     * 水平(不考虑 y) distance
+     */
+    public double distanceHorizontal(Vector3 pos) {
+        return Math.sqrt(distanceHorizontalSquared(pos));
+    }
+
+    public double distanceHorizontalSquared(Vector3 pos) {
+        return MathHelper.square(this.x - pos.x) + MathHelper.square(this.z - pos.z);
     }
 
     public double maxPlainDistance() {
@@ -376,6 +411,10 @@ public class Vector3 implements Cloneable {
             return this;
         }
 
+        return new Vector3(x, y, z);
+    }
+
+    public Vector3 forceAsVector3() {
         return new Vector3(x, y, z);
     }
 

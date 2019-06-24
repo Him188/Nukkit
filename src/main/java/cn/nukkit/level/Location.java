@@ -105,6 +105,35 @@ public class Location extends Position {
     }
 
     @Override
+    public Location addSelf(Vector3 x) {
+        this.x += x.getX();
+        this.y += x.getY();
+        this.z += x.getZ();
+        return this;
+    }
+
+    @Override
+    public Location addSelf(double x) {
+        this.x += x;
+        return this;
+    }
+
+    @Override
+    public Location addSelf(double x, double y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+
+    @Override
+    public Location addSelf(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
+    @Override
     public Location subtract() {
         return this.subtract(0, 0, 0);
     }

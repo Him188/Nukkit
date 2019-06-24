@@ -2054,6 +2054,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.server.onPlayerCompleteLoginSequence(this);
     }
 
+    private long lastRightClickAirTime = System.currentTimeMillis();
+    private long lastRightClickBlockTime = System.currentTimeMillis();
+
     public void handleDataPacket(DataPacket packet) {
         if (!connected) {
             return;
@@ -3022,13 +3025,17 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     item = this.inventory.getItemInHand();
                                 }
 
-                                PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, directionVector, face, Action.RIGHT_CLICK_AIR);
 
-                                this.server.getPluginManager().callEvent(interactEvent);
+                                if (System.currentTimeMillis() - this.lastRightClickAirTime > 2) {
+                                    this.lastRightClickAirTime = System.currentTimeMillis();
+                                    PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, directionVector, face, Action.RIGHT_CLICK_AIR);
 
-                                if (interactEvent.isCancelled()) {
-                                    this.inventory.sendHeldItem(this);
-                                    break packetswitch;
+                                    this.server.getPluginManager().callEvent(interactEvent);
+
+                                    if (interactEvent.isCancelled()) {
+                                        this.inventory.sendHeldItem(this);
+                                        break packetswitch;
+                                    }
                                 }
 
                                 if (item.onClickAir(this, directionVector) && this.isSurvival()) {
@@ -4867,24 +4874,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return false;
     }
 
-    @Override
-    public int hashCode() {
-        if ((this.hash == 0) || (this.hash == 485)) {
-            this.hash = (485 + (getUniqueId() != null ? getUniqueId().hashCode() : 0));
-        }
-
-        return this.hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Player)) {
-            return false;
-        }
-        Player other = (Player) obj;
-        return Objects.equals(this.getUniqueId(), other.getUniqueId()) && this.getId() == other.getId();
-    }
-
     /**
      * Notifies an ACK response from the client
      *
@@ -4935,6 +4924,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.fishing = fishingHook;
             fishingHook.rod = fishingRod;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Player && ((Player) obj).getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) this.id;
     }
 
     public void stopFishing(boolean click) {
