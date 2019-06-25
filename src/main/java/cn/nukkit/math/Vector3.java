@@ -370,6 +370,13 @@ public class Vector3 implements Cloneable {
         return this;
     }
 
+    public Vector3 setComponents(Vector3 vector3) {
+        this.x = vector3.x;
+        this.y = vector3.y;
+        this.z = vector3.z;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Vector3(x=" + this.x + ",y=" + this.y + ",z=" + this.z + ")";
