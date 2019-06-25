@@ -2,6 +2,7 @@ package cn.nukkit.math;
 
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * author: MagicDroidX
@@ -361,6 +362,37 @@ public class Vector3 implements Cloneable {
         } else {
             return new Vector3(this.x + xDiff * f, this.y + yDiff * f, this.z + zDiff * f);
         }
+    }
+
+    /**
+     * 即获取 this 对 another 的 yaw
+     */
+    @SuppressWarnings("Duplicates")
+    public double asinXZ(@NotNull Vector3 another) {
+        double deltaX = this.getX() - another.getX();
+        double deltaZ = this.getZ() - another.getZ();
+
+        double yaw = Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)) / 3.14 * 180;
+        if (deltaZ > 0) {
+            yaw = -yaw + 180;
+        }
+
+        if (yaw < 0) {
+            yaw = 360 + yaw;
+        }
+
+        return yaw;
+    }
+
+    /**
+     * 即获取 this 对 another 的 pitch
+     */
+    @SuppressWarnings("Duplicates")
+    public double asinXZY(@NotNull Vector3 another) {
+        double deltaX = this.getX() - another.getX();
+        double deltaY = this.getY() - another.getY();
+        double deltaZ = this.getZ() - another.getZ();
+        return (double) Math.round(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY)) / Math.PI * 180d);
     }
 
     public Vector3 setComponents(double x, double y, double z) {
