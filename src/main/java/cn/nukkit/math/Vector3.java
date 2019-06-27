@@ -491,6 +491,13 @@ public class Vector3 implements Cloneable {
         return new Vector3(x, y, z);
     }
 
+    /**
+     * 转化单位向量
+     */
+    public Vector3 asUnitVector3() {
+        return new Vector3(x / length(), y / length(), z / length());
+    }
+
     public Vector3f asVector3f() {
         return new Vector3f((float) this.x, (float) this.y, (float) this.z);
     }
