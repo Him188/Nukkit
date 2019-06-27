@@ -84,6 +84,37 @@ public class Vector3 implements Cloneable {
         return this.z;
     }
 
+    /**
+     * 绕轴旋转这个向量
+     *
+     * @param axis 轴
+     *
+     * @return new V3
+     */
+    @SuppressWarnings("Duplicates")
+    public Vector3 rotate(Vector3 axis, double rotateAngle) {
+        return new Vector3(
+                (axis.x * axis.x * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.x + (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) - axis.z * MathHelper.sin(rotateAngle)) * this.y + (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.y * MathHelper.sin(rotateAngle)) * this.z,
+                (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) + axis.z * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.y * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.y + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.x * MathHelper.sin(rotateAngle)) * this.z,
+                (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.y * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.x * MathHelper.sin(rotateAngle)) * this.y + (axis.z * axis.z * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.z
+        );
+    }
+
+    /**
+     * 绕轴旋转这个向量
+     *
+     * @param axis 轴
+     *
+     * @return this
+     */
+    @SuppressWarnings("Duplicates")
+    public Vector3 rotateSelf(Vector3 axis, double rotateAngle) {
+        double newX = (axis.x * axis.x * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.x + (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) - axis.z * MathHelper.sin(rotateAngle)) * this.y + (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.y * MathHelper.sin(rotateAngle)) * this.z;
+        double newY = (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) + axis.z * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.y * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.y + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.x * MathHelper.sin(rotateAngle)) * this.z;
+        double newZ = (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.y * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.x * MathHelper.sin(rotateAngle)) * this.y + (axis.z * axis.z * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.z;
+        return this.setComponents(newX, newY, newZ);
+    }
+
     public Vector3 add(double x) {
         return this.add(x, 0, 0);
     }
