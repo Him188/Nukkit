@@ -169,6 +169,31 @@ public class Position extends Vector3 {
     }
 
     @Override
+    public Position subtractSelf(Vector3 x) {
+        return this.add(-x.getX(), -x.getY(), -x.getZ());
+    }
+
+    @Override
+    public Position subtractSelf() {
+        return this.subtractSelf(0, 0, 0);
+    }
+
+    @Override
+    public Position subtractSelf(double x) {
+        return this.subtractSelf(x, 0, 0);
+    }
+
+    @Override
+    public Position subtractSelf(double x, double y) {
+        return this.subtractSelf(x, y, 0);
+    }
+
+    @Override
+    public Position subtractSelf(double x, double y, double z) {
+        return this.addSelf(-x, -y, -z);
+    }
+
+    @Override
     public Position subtract(Vector3 x) {
         return this.add(-x.getX(), -x.getY(), -x.getZ());
     }
@@ -181,6 +206,22 @@ public class Position extends Vector3 {
     @Override
     public Position divide(double number) {
         return new Position(this.x / number, this.y / number, this.z / number, this.level);
+    }
+
+    @Override
+    public Position multiplySelf(double number) {
+        this.x *= number;
+        this.y *= number;
+        this.z *= number;
+        return this;
+    }
+
+    @Override
+    public Position divideSelf(double number) {
+        this.x /= number;
+        this.y /= number;
+        this.z /= number;
+        return this;
     }
 
     @Override

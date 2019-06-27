@@ -141,6 +141,26 @@ public class Vector3 implements Cloneable {
         return this.add(-x, -y, -z);
     }
 
+    public Vector3 subtractSelf(Vector3 x) {
+        return this.add(-x.getX(), -x.getY(), -x.getZ());
+    }
+
+    public Vector3 subtractSelf() {
+        return this.subtractSelf(0, 0, 0);
+    }
+
+    public Vector3 subtractSelf(double x) {
+        return this.subtractSelf(x, 0, 0);
+    }
+
+    public Vector3 subtractSelf(double x, double y) {
+        return this.subtractSelf(x, y, 0);
+    }
+
+    public Vector3 subtractSelf(double x, double y, double z) {
+        return this.addSelf(-x, -y, -z);
+    }
+
     public Vector3 subtract(Vector3 x) {
         return this.add(-x.getX(), -x.getY(), -x.getZ());
     }
@@ -151,6 +171,20 @@ public class Vector3 implements Cloneable {
 
     public Vector3 divide(double number) {
         return new Vector3(this.x / number, this.y / number, this.z / number);
+    }
+
+    public Vector3 multiplySelf(double number) {
+        this.x *= number;
+        this.y *= number;
+        this.z *= number;
+        return this;
+    }
+
+    public Vector3 divideSelf(double number) {
+        this.x /= number;
+        this.y /= number;
+        this.z /= number;
+        return this;
     }
 
     public Vector3 ceil() {
@@ -368,11 +402,11 @@ public class Vector3 implements Cloneable {
      * 即获取 this 对 another 的 yaw
      */
     @SuppressWarnings("Duplicates")
-    public double asinXZ(@NotNull Vector3 another) {
+    public double getYawTo(@NotNull Vector3 another) {
         double deltaX = this.getX() - another.getX();
         double deltaZ = this.getZ() - another.getZ();
 
-        double yaw = Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)) / 3.14 * 180;
+        double yaw = Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)) / Math.PI * 180d;
         if (deltaZ > 0) {
             yaw = -yaw + 180;
         }
@@ -388,7 +422,7 @@ public class Vector3 implements Cloneable {
      * 即获取 this 对 another 的 pitch
      */
     @SuppressWarnings("Duplicates")
-    public double asinXZY(@NotNull Vector3 another) {
+    public double getPitchTo(@NotNull Vector3 another) {
         double deltaX = this.getX() - another.getX();
         double deltaY = this.getY() - another.getY();
         double deltaZ = this.getZ() - another.getZ();

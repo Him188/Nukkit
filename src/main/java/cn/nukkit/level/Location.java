@@ -154,6 +154,31 @@ public class Location extends Position {
     }
 
     @Override
+    public Location subtractSelf(Vector3 x) {
+        return this.add(-x.getX(), -x.getY(), -x.getZ());
+    }
+
+    @Override
+    public Location subtractSelf() {
+        return this.subtractSelf(0, 0, 0);
+    }
+
+    @Override
+    public Location subtractSelf(double x) {
+        return this.subtractSelf(x, 0, 0);
+    }
+
+    @Override
+    public Location subtractSelf(double x, double y) {
+        return this.subtractSelf(x, y, 0);
+    }
+
+    @Override
+    public Location subtractSelf(double x, double y, double z) {
+        return this.addSelf(-x, -y, -z);
+    }
+
+    @Override
     public Location subtract(Vector3 x) {
         return this.add(-x.getX(), -x.getY(), -x.getZ());
     }
@@ -166,6 +191,22 @@ public class Location extends Position {
     @Override
     public Location divide(double number) {
         return new Location(this.x / number, this.y / number, this.z / number, this.yaw, this.pitch, this.level);
+    }
+
+    @Override
+    public Location multiplySelf(double number) {
+        this.x *= number;
+        this.y *= number;
+        this.z *= number;
+        return this;
+    }
+
+    @Override
+    public Location divideSelf(double number) {
+        this.x /= number;
+        this.y /= number;
+        this.z /= number;
+        return this;
     }
 
     @Override
