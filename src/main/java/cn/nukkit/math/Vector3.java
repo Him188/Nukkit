@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * Nukkit Project
  */
 public class Vector3 implements Cloneable {
+    public static final Vector3 ORIGIN = new Vector3(0, 0, 0);
 
     public double x;
     public double y;
