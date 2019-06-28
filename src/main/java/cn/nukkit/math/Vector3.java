@@ -104,6 +104,35 @@ public class Vector3 implements Cloneable {
     }
 
     /**
+     * 向前移动点 <br/>
+     * distance 是精准的.
+     */
+    public Vector3 goStraight(double distance) {
+        double yaw = ORIGIN.getYawTo(this);
+        double pitch = ORIGIN.getPitchTo(this);
+
+        return new Vector3(
+                this.x + distance * MathHelper.cos(yaw) * Math.cos(pitch),
+                this.y + distance * Math.sin(pitch),
+                this.z + distance * MathHelper.sin(yaw) * Math.cos(pitch)
+        );
+    }
+
+    /**
+     * 向前移动点 <br/>
+     * distance 是精准的.
+     */
+    public Vector3 goStraightSelf(double distance) {
+        double yaw = ORIGIN.getYawTo(this);
+        double pitch = ORIGIN.getPitchTo(this);
+
+        this.x += distance * MathHelper.cos(yaw) * Math.cos(pitch);
+        this.y += distance * Math.sin(pitch);
+        this.z += distance * MathHelper.sin(yaw) * Math.cos(pitch);
+        return this;
+    }
+
+    /**
      * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
      *
      * @param deltaYaw   yaw 旋转量
