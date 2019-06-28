@@ -65,12 +65,27 @@ public class Location extends Position {
         return new Location(pos.x, pos.y, pos.z, yaw, pitch, (level == null) ? ((pos instanceof Position) ? ((Position) pos).level : null) : level);
     }
 
+    /**
+     * z 轴正方向为 0, 顺时针方向增大.
+     *
+     * @return 0d ~ 360d
+     */
     public double getYaw() {
         return this.yaw;
     }
 
+    /**
+     * @return -90d ~ 90d
+     */
     public double getPitch() {
         return this.pitch;
+    }
+
+    /**
+     * 取得直接用于三角函数的 pitch 值.
+     */
+    public double getPitchPositive() {
+        return this.pitch < 0 ? -this.pitch : 180 + this.pitch;
     }
 
     @Override

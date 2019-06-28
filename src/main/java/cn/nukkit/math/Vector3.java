@@ -33,6 +33,14 @@ public class Vector3 implements Cloneable {
         this.z = z;
     }
 
+    public static Vector3 ofPolarCoordinate(double yaw, double positivePitch) {
+        return new Vector3().setPolarComponents(yaw, positivePitch);
+    }
+
+    public static Vector3 ofPolarCoordinate(double yaw, double positivePitch, double length) {
+        return new Vector3().setPolarComponents(yaw, positivePitch, length);
+    }
+
     public double getX() {
         return this.x;
     }
@@ -94,12 +102,9 @@ public class Vector3 implements Cloneable {
      * @return new V3
      */
     public Vector3 rotate(double deltaYaw, double deltaPitch) {
-        double yaw = ORIGIN.getYawTo(this) + deltaYaw;
-        double pitch = ORIGIN.getPitchTo(this) + deltaPitch;
-        return new Vector3(
-                MathHelper.cos(yaw) * Math.cos(pitch),
-                Math.sin(pitch),
-                MathHelper.sin(yaw) * Math.cos(pitch)
+        return Vector3.ofPolarCoordinate(
+                ORIGIN.getYawTo(this) + deltaYaw,
+                ORIGIN.getPitchTo(this) + deltaPitch
         );
     }
 
@@ -108,14 +113,11 @@ public class Vector3 implements Cloneable {
      * distance 是精准的.
      */
     public Vector3 goStraight(double distance) {
-        double yaw = ORIGIN.getYawTo(this);
-        double pitch = ORIGIN.getPitchTo(this);
-
-        return new Vector3(
-                this.x + distance * MathHelper.cos(yaw) * Math.cos(pitch),
-                this.y + distance * Math.sin(pitch),
-                this.z + distance * MathHelper.sin(yaw) * Math.cos(pitch)
-        );
+        return Vector3.ofPolarCoordinate(
+                ORIGIN.getYawTo(this),
+                ORIGIN.getPitchTo(this),
+                distance
+        ).addSelf(this);
     }
 
     /**
@@ -123,13 +125,11 @@ public class Vector3 implements Cloneable {
      * distance 是精准的.
      */
     public Vector3 goStraightSelf(double distance) {
-        double yaw = ORIGIN.getYawTo(this);
-        double pitch = ORIGIN.getPitchTo(this);
-
-        this.x += distance * MathHelper.cos(yaw) * Math.cos(pitch);
-        this.y += distance * Math.sin(pitch);
-        this.z += distance * MathHelper.sin(yaw) * Math.cos(pitch);
-        return this;
+        return this.addPolarSelf(
+                ORIGIN.getYawTo(this),
+                ORIGIN.getPitchTo(this),
+                distance
+        );
     }
 
     /**
@@ -141,13 +141,10 @@ public class Vector3 implements Cloneable {
      * @return new V3
      */
     public Vector3 rotateSelf(double deltaYaw, double deltaPitch) {
-        double yaw = ORIGIN.getYawTo(this) + deltaYaw;
-        double pitch = ORIGIN.getPitchTo(this) + deltaPitch;
-
-        this.x = MathHelper.cos(yaw) * Math.cos(pitch);
-        this.y = Math.sin(pitch);
-        this.z = MathHelper.sin(yaw) * Math.cos(pitch);
-        return this;
+        return this.setPolarComponents(
+                ORIGIN.getYawTo(this)+ deltaYaw,
+                ORIGIN.getPitchTo(this)+ deltaPitch
+        );
     }
 
     /**
@@ -217,6 +214,28 @@ public class Vector3 implements Cloneable {
 
     public Vector3 add(double x, double y, double z) {
         return new Vector3(this.x + x, this.y + y, this.z + z);
+    }
+
+    public Vector3 addPolar(double yaw, double pitch) {
+        return Vector3.ofPolarCoordinate(yaw, pitch).addSelf(this);
+    }
+
+    public Vector3 addPolar(double yaw, double pitch, double distance) {
+        return Vector3.ofPolarCoordinate(yaw, pitch, distance).addSelf(this);
+    }
+
+    public Vector3 addPolarSelf(double yaw, double pitch) {
+        double x = this.x;
+        double y = this.y;
+        double z = this.z;
+        return this.setPolarComponents(yaw, pitch).addSelf(x, y, z);
+    }
+
+    public Vector3 addPolarSelf(double yaw, double pitch, double distance) {
+        double x = this.x;
+        double y = this.y;
+        double z = this.z;
+        return this.setPolarComponents(yaw, pitch, distance).addSelf(x, y, z);
     }
 
     public Vector3 addSelf(Vector3 x) {
@@ -557,6 +576,26 @@ public class Vector3 implements Cloneable {
         this.y = y;
         this.z = z;
         return this;
+    }
+
+    /**
+     * 通过极坐标参数设置.
+     *
+     * @param yaw           yaw
+     * @param positivePitch {@link Location#getPitchPositive()}
+     * @param length        长度
+     *
+     * @return this
+     */
+    public Vector3 setPolarComponents(double yaw, double positivePitch, double length) {
+        this.x = length * MathHelper.sin(yaw) * MathHelper.cos(positivePitch);
+        this.y = length * MathHelper.sin(positivePitch);
+        this.z = length * MathHelper.cos(yaw) * MathHelper.cos(positivePitch);
+        return this;
+    }
+
+    public Vector3 setPolarComponents(double yaw, double positivePitch) {
+        return this.setPolarComponents(yaw, positivePitch, 1);
     }
 
     public Vector3 setComponents(Vector3 vector3) {
