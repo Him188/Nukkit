@@ -179,16 +179,32 @@ public class Vector3 implements Cloneable {
     public Vector3 rotateSelf(Vector3 axis, double rotateRadians) {
         double cos = MathHelper.cos(rotateRadians);
         double sin = MathHelper.sin(rotateRadians);
-        double newX = (axis.x * axis.x * (1 - cos) + cos) * this.x
-                      + (axis.x * axis.y * (1 - cos) - axis.z * sin) * this.y
-                      + (axis.x * axis.z * (1 - cos) + axis.y * sin) * this.z;
-        double newY = (axis.x * axis.y * (1 - cos) + axis.z * sin) * this.x
-                      + (axis.y * axis.y * (1 - cos) + cos) * this.y
-                      + (axis.y * axis.z * (1 - cos) - axis.x * sin) * this.z;
-        double newZ = (axis.x * axis.z * (1 - cos) - axis.y * sin) * this.x
-                      + (axis.y * axis.z * (1 - cos) + axis.x * sin) * this.y
-                      + (axis.z * axis.z * (1 - cos) + cos) * this.z;
+
+        double newX = (axis.x * axis.x * (1 - cos) + cos) * this.x +
+                      (axis.x * axis.y * (1 - cos) - axis.z * sin) * this.y +
+                      (axis.x * axis.z * (1 - cos) + axis.y * sin) * this.z;
+        double newY = (axis.x * axis.y * (1 - cos) + axis.z * sin) * this.x +
+                      (axis.y * axis.y * (1 - cos) + cos) * this.y +
+                      (axis.y * axis.z * (1 - cos) - axis.x * sin) * this.z;
+        double newZ = (axis.x * axis.z * (1 - cos) - axis.y * sin) * this.x +
+                      (axis.y * axis.z * (1 - cos) + axis.x * sin) * this.y +
+                      (axis.z * axis.z * (1 - cos) + cos) * this.z;
         return this.setComponents(newX, newY, newZ);
+    }
+
+    /**
+     * 得到一个与 this 垂直的向量
+     */
+    public Vector3 getVerticalVector3() {
+        if (this.z != 0) {
+            return new Vector3(1, 1, -(this.x + this.y) / this.z);
+        } else if (this.y != 0) {
+            return new Vector3(1, -(this.x + this.z) / this.y, 1);
+        } else if (this.x != 0) {
+            return new Vector3(-(this.y + this.z) / this.x, 1, 1);
+        } else {
+            return new Vector3();
+        }
     }
 
     public Vector3 add(double x) {
