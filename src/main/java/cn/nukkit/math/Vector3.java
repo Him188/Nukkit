@@ -96,15 +96,15 @@ public class Vector3 implements Cloneable {
     /**
      * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
      *
-     * @param deltaYaw   yaw 旋转量, 角度制, 0~360
-     * @param deltaPitch pitch 旋转量, 角度制, 0~180
+     * @param deltaYawAngle   yaw 旋转量, 角度制, 0~360
+     * @param deltaPitchAngle pitch 旋转量, 角度制, 0~180
      *
      * @return new V3
      */
-    public Vector3 rotate(double deltaYaw, double deltaPitch) {
+    public Vector3 rotate(double deltaYawAngle, double deltaPitchAngle) {
         return Vector3.ofPolarCoordinate(
-                ORIGIN.getYawTo(this) + deltaYaw,
-                ORIGIN.getPitchTo(this) + deltaPitch
+                ORIGIN.getYawTo(this) + deltaYawAngle,
+                ORIGIN.getPitchTo(this) + deltaPitchAngle
         );
     }
 
@@ -142,8 +142,8 @@ public class Vector3 implements Cloneable {
      */
     public Vector3 rotateSelf(double deltaYaw, double deltaPitch) {
         return this.setPolarComponents(
-                ORIGIN.getYawTo(this)+ deltaYaw,
-                ORIGIN.getPitchTo(this)+ deltaPitch
+                ORIGIN.getYawTo(this) + deltaYaw,
+                ORIGIN.getPitchTo(this) + deltaPitch
         );
     }
 
@@ -588,6 +588,8 @@ public class Vector3 implements Cloneable {
      * @return this
      */
     public Vector3 setPolarComponents(double yaw, double positivePitch, double length) {
+        yaw %= 360;
+        positivePitch %= 180;
         this.x = length * MathHelper.sin(yaw) * MathHelper.cos(positivePitch);
         this.y = length * MathHelper.sin(positivePitch);
         this.z = length * MathHelper.cos(yaw) * MathHelper.cos(positivePitch);
