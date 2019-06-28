@@ -193,15 +193,52 @@ public class Vector3 implements Cloneable {
      * 得到一个与 this 垂直的向量
      */
     public Vector3 getVerticalVector3() {
+        int flag = 0x000;
+        if (this.x == 0) {
+            flag |= 0x100;
+        }
+        if (this.y == 0) {
+            flag |= 0x010;
+        }
+        if (this.z == 0) {
+            flag |= 0x001;
+        }
+
+        switch (flag) {
+            case 0x010:
+            case 0x000:
+                return new Vector3(1, 0, -this.x / this.z);
+
+            case 0x100:
+                return new Vector3(0, 1, -this.y / this.z);
+
+            case 0x001:
+                return new Vector3(-this.y / this.x, 1, 0);
+
+            case 0x110:
+            case 0x101:
+            case 0x011:
+            case 0x111://2到三个坐标值为0, 不予计算
+            default:
+                return new Vector3();
+        }
+
+        /*
         if (this.z != 0) {
-            return new Vector3(1, 1, -(this.x + this.y) / this.z);
+            if (this.x != 0) {
+                return new Vector3(1, 0, -this.x / this.z);
+            } else if (this.y != 0) {
+                return new Vector3(0, 1, -this.y / this.z);
+            } else {
+                return new Vector3();
+            }
         } else if (this.y != 0) {
             return new Vector3(1, -(this.x + this.z) / this.y, 1);
         } else if (this.x != 0) {
             return new Vector3(-(this.y + this.z) / this.x, 1, 1);
         } else {
             return new Vector3();
-        }
+        }*/
     }
 
     public Vector3 add(double x) {
