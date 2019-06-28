@@ -88,8 +88,8 @@ public class Vector3 implements Cloneable {
     /**
      * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
      *
-     * @param deltaYaw   yaw 旋转量
-     * @param deltaPitch pitch 旋转量
+     * @param deltaYaw   yaw 旋转量, 角度制, 0~360
+     * @param deltaPitch pitch 旋转量, 角度制, 0~180
      *
      * @return new V3
      */
@@ -135,8 +135,8 @@ public class Vector3 implements Cloneable {
     /**
      * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
      *
-     * @param deltaYaw   yaw 旋转量
-     * @param deltaPitch pitch 旋转量
+     * @param deltaYaw   yaw 旋转量, 角度制, 0~360
+     * @param deltaPitch pitch 旋转量, 角度制, 0~180
      *
      * @return new V3
      */
@@ -153,30 +153,32 @@ public class Vector3 implements Cloneable {
     /**
      * 绕轴旋转这个向量. 罗德里格旋转公式
      *
-     * @param axis 轴
+     * @param axis          轴
+     * @param rotateRadians 弧度制
      *
      * @return new V3
      */
     @SuppressWarnings("Duplicates")
-    public Vector3 rotate(Vector3 axis, double rotateAngle) {
+    public Vector3 rotate(Vector3 axis, double rotateRadians) {
         return new Vector3(
-                (axis.x * axis.x * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.x + (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) - axis.z * MathHelper.sin(rotateAngle)) * this.y + (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.y * MathHelper.sin(rotateAngle)) * this.z,
-                (axis.x * axis.y * (1 - MathHelper.cos(rotateAngle)) + axis.z * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.y * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.y + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.x * MathHelper.sin(rotateAngle)) * this.z,
-                (axis.x * axis.z * (1 - MathHelper.cos(rotateAngle)) - axis.y * MathHelper.sin(rotateAngle)) * this.x + (axis.y * axis.z * (1 - MathHelper.cos(rotateAngle)) + axis.x * MathHelper.sin(rotateAngle)) * this.y + (axis.z * axis.z * (1 - MathHelper.cos(rotateAngle)) + MathHelper.cos(rotateAngle)) * this.z
+                (axis.x * axis.x * (1 - MathHelper.cos(rotateRadians)) + MathHelper.cos(rotateRadians)) * this.x + (axis.x * axis.y * (1 - MathHelper.cos(rotateRadians)) - axis.z * MathHelper.sin(rotateRadians)) * this.y + (axis.x * axis.z * (1 - MathHelper.cos(rotateRadians)) + axis.y * MathHelper.sin(rotateRadians)) * this.z,
+                (axis.x * axis.y * (1 - MathHelper.cos(rotateRadians)) + axis.z * MathHelper.sin(rotateRadians)) * this.x + (axis.y * axis.y * (1 - MathHelper.cos(rotateRadians)) + MathHelper.cos(rotateRadians)) * this.y + (axis.y * axis.z * (1 - MathHelper.cos(rotateRadians)) - axis.x * MathHelper.sin(rotateRadians)) * this.z,
+                (axis.x * axis.z * (1 - MathHelper.cos(rotateRadians)) - axis.y * MathHelper.sin(rotateRadians)) * this.x + (axis.y * axis.z * (1 - MathHelper.cos(rotateRadians)) + axis.x * MathHelper.sin(rotateRadians)) * this.y + (axis.z * axis.z * (1 - MathHelper.cos(rotateRadians)) + MathHelper.cos(rotateRadians)) * this.z
         );
     }
 
     /**
      * 绕轴旋转这个向量. 罗德里格旋转公式
      *
-     * @param axis 轴
+     * @param axis          轴
+     * @param rotateRadians 弧度制
      *
      * @return this
      */
     @SuppressWarnings("Duplicates")
-    public Vector3 rotateSelf(Vector3 axis, double rotateAngle) {
-        double cos = MathHelper.cos(rotateAngle);
-        double sin = MathHelper.sin(rotateAngle);
+    public Vector3 rotateSelf(Vector3 axis, double rotateRadians) {
+        double cos = MathHelper.cos(rotateRadians);
+        double sin = MathHelper.sin(rotateRadians);
         double newX = (axis.x * axis.x * (1 - cos) + cos) * this.x
                       + (axis.x * axis.y * (1 - cos) - axis.z * sin) * this.y
                       + (axis.x * axis.z * (1 - cos) + axis.y * sin) * this.z;
@@ -186,22 +188,6 @@ public class Vector3 implements Cloneable {
         double newZ = (axis.x * axis.z * (1 - cos) - axis.y * sin) * this.x
                       + (axis.y * axis.z * (1 - cos) + axis.x * sin) * this.y
                       + (axis.z * axis.z * (1 - cos) + cos) * this.z;
-        return this.setComponents(newX, newY, newZ);
-    }
-
-    /**
-     * 快速绕轴旋转这个向量. 罗德里格旋转公式.
-     * 不能垂直旋转.
-     *
-     * @param axis 轴
-     *
-     * @return this
-     */
-    public Vector3 rotateSelfFast(Vector3 axis, double rotateAngle) {
-        double dot = this.dot(axis);
-        double newX = MathHelper.cos(rotateAngle) * this.x + ((1 - Math.cos(rotateAngle)) * axis.x + MathHelper.sin(rotateAngle)) * dot;
-        double newY = MathHelper.cos(rotateAngle) * this.y + ((1 - Math.cos(rotateAngle)) * axis.y + MathHelper.sin(rotateAngle)) * dot;
-        double newZ = MathHelper.cos(rotateAngle) * this.z + ((1 - Math.cos(rotateAngle)) * axis.z + MathHelper.sin(rotateAngle)) * dot;
         return this.setComponents(newX, newY, newZ);
     }
 
