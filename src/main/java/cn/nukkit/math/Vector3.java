@@ -86,6 +86,42 @@ public class Vector3 implements Cloneable {
     }
 
     /**
+     * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
+     *
+     * @param deltaYaw   yaw 旋转量
+     * @param deltaPitch pitch 旋转量
+     *
+     * @return new V3
+     */
+    public Vector3 rotate(double deltaYaw, double deltaPitch) {
+        double yaw = ORIGIN.getYawTo(this) + deltaYaw;
+        double pitch = ORIGIN.getPitchTo(this) + deltaPitch;
+        return new Vector3(
+                MathHelper.cos(yaw) * Math.cos(pitch),
+                Math.sin(pitch),
+                MathHelper.sin(yaw) * Math.cos(pitch)
+        );
+    }
+
+    /**
+     * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
+     *
+     * @param deltaYaw   yaw 旋转量
+     * @param deltaPitch pitch 旋转量
+     *
+     * @return new V3
+     */
+    public Vector3 rotateSelf(double deltaYaw, double deltaPitch) {
+        double yaw = ORIGIN.getYawTo(this) + deltaYaw;
+        double pitch = ORIGIN.getPitchTo(this) + deltaPitch;
+
+        this.x = MathHelper.cos(yaw) * Math.cos(pitch);
+        this.y = Math.sin(pitch);
+        this.z = MathHelper.sin(yaw) * Math.cos(pitch);
+        return this;
+    }
+
+    /**
      * 绕轴旋转这个向量
      *
      * @param axis 轴
