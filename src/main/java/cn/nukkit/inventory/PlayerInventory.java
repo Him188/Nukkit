@@ -250,7 +250,7 @@ public class PlayerInventory extends BaseInventory {
             return this.clear(index);
         }
 
-        Server.getInstance().getLogger().info("setItem" + item + " in index" + index);
+        //Server.getInstance().getLogger().info("setItem" + item + " in index" + index);
         //Armor change
         if (!ignoreArmorEvents && index >= this.getSize()) {
             EntityArmorChangeEvent ev = new EntityArmorChangeEvent(this.getHolder(), this.getItem(index), item, index);

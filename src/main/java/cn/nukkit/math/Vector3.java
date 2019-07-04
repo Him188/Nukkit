@@ -33,12 +33,12 @@ public class Vector3 implements Cloneable {
         this.z = z;
     }
 
-    public static Vector3 ofPolarCoordinate(double yaw, double positivePitch) {
-        return new Vector3().setPolarComponents(yaw, positivePitch);
+    public static Vector3 ofPolarCoordinate(double yawDegrees, double pitchDegrees) {
+        return new Vector3().setPolarComponents(yawDegrees, pitchDegrees);
     }
 
-    public static Vector3 ofPolarCoordinate(double yaw, double positivePitch, double length) {
-        return new Vector3().setPolarComponents(yaw, positivePitch, length);
+    public static Vector3 ofPolarCoordinate(double yawDegrees, double pitchDegrees, double length) {
+        return new Vector3().setPolarComponents(yawDegrees, pitchDegrees, length);
     }
 
     public double getX() {
@@ -96,15 +96,16 @@ public class Vector3 implements Cloneable {
     /**
      * 绕 {@linkplain #ORIGIN 坐标原点} 旋转这个向量(旋转绝对角度)
      *
-     * @param deltaYawAngle   yaw 旋转量, 角度制, 0~360
-     * @param deltaPitchAngle pitch 旋转量, 角度制, 0~180
+     * @param deltaYawDegrees   yaw 旋转量, 角度制, 0~360
+     * @param deltaPitchDegrees pitch 旋转量, 角度制, 0~180
      *
      * @return new V3
      */
-    public Vector3 rotate(double deltaYawAngle, double deltaPitchAngle) {
+    public Vector3 rotate(double deltaYawDegrees, double deltaPitchDegrees) {
         return Vector3.ofPolarCoordinate(
-                ORIGIN.getYawTo(this) + deltaYawAngle,
-                ORIGIN.getPitchTo(this) + deltaPitchAngle
+                ORIGIN.getYawTo(this) + deltaYawDegrees,
+                ORIGIN.getPitchTo(this) + deltaPitchDegrees,
+                length()
         );
     }
 
@@ -143,7 +144,8 @@ public class Vector3 implements Cloneable {
     public Vector3 rotateSelf(double deltaYaw, double deltaPitch) {
         return this.setPolarComponents(
                 ORIGIN.getYawTo(this) + deltaYaw,
-                ORIGIN.getPitchTo(this) + deltaPitch
+                ORIGIN.getPitchTo(this) + deltaPitch,
+                length()
         );
     }
 
@@ -578,34 +580,44 @@ public class Vector3 implements Cloneable {
     }
 
     /**
-     * 即获取 this 对 another 的 yaw
+     * 即获取 this 对 another 的 yaw, in degree
      */
     @SuppressWarnings("Duplicates")
     public double getYawTo(@NotNull Vector3 another) {
         double deltaX = this.getX() - another.getX();
         double deltaZ = this.getZ() - another.getZ();
 
-        double yaw = Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)) / Math.PI * 180d;
-        if (deltaZ > 0) {
-            yaw = -yaw + 180;
+        if (deltaX == 0 && deltaZ == 0) {
+            return 0;
         }
 
+        double yaw = Math.toDegrees(Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)));
+
         if (yaw < 0) {
-            yaw = 360 + yaw;
+            yaw = 360d + yaw;
         }
 
         return yaw;
     }
 
     /**
-     * 即获取 this 对 another 的 pitch
+     * 即获取 this 对 another 的 pitch, in degree
      */
     @SuppressWarnings("Duplicates")
     public double getPitchTo(@NotNull Vector3 another) {
         double deltaX = this.getX() - another.getX();
         double deltaY = this.getY() - another.getY();
         double deltaZ = this.getZ() - another.getZ();
-        return (double) Math.round(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY)) / Math.PI * 180d);
+        return (double) Math.round(Math.toDegrees(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY))));
+    }
+
+    /**
+     * 即获取 this 对 another 的 pitch, in degree
+     */
+    @SuppressWarnings("Duplicates")
+    public double getPositivePitchTo(@NotNull Vector3 another) {
+        double pitch = getPitchTo(another);
+        return pitch < 0 ? -pitch : 180 + pitch;
     }
 
     public Vector3 setComponents(double x, double y, double z) {
@@ -618,23 +630,39 @@ public class Vector3 implements Cloneable {
     /**
      * 通过极坐标参数设置.
      *
-     * @param yaw           yaw
-     * @param positivePitch {@link Location#getPitchPositive()}
-     * @param length        长度
+     * @param yawDegrees   yawDegrees
+     * @param pitchDegrees 只要是 pitch 就可以. 自动转换
+     * @param length       长度
      *
      * @return this
      */
-    public Vector3 setPolarComponents(double yaw, double positivePitch, double length) {
-        yaw %= 360;
-        positivePitch %= 180;
-        this.x = length * MathHelper.sin(yaw) * MathHelper.cos(positivePitch);
-        this.y = length * MathHelper.sin(positivePitch);
-        this.z = length * MathHelper.cos(yaw) * MathHelper.cos(positivePitch);
+    public Vector3 setPolarComponents(double yawDegrees, double pitchDegrees, double length) {
+        yawDegrees %= 360;
+        pitchDegrees = pitchDegrees < 0 ? -pitchDegrees : 180 + pitchDegrees;
+        pitchDegrees %= 180;
+
+        yawDegrees = Math.toRadians(yawDegrees);
+        pitchDegrees = Math.toRadians(pitchDegrees);
+        this.x = length * Math.sin(yawDegrees) * Math.cos(pitchDegrees);
+        this.y = length * Math.sin(pitchDegrees);
+        this.z = length * Math.cos(yawDegrees) * Math.cos(pitchDegrees);
+
+        //this.x = length * Math.cos(yawDegrees) * Math.sin(pitchDegrees);
+        //this.y = length * Math.cos(pitchDegrees);
+        //this.z = length * Math.sin(yawDegrees) * Math.sin(pitchDegrees);
+
+        //this.x = length * Math.sin(yawDegrees) * Math.sin(pitchDegrees);
+        //this.y = length * Math.cos(pitchDegrees);
+        //this.z = length * Math.cos(yawDegrees) * Math.sin(pitchDegrees);
+
+        //his.x = length * Math.cos(yawDegrees) * Math.cos(pitchDegrees);
+        //his.y = length * Math.sin(pitchDegrees);
+        //his.z = length * Math.sin(yawDegrees) * Math.cos(pitchDegrees);
         return this;
     }
 
-    public Vector3 setPolarComponents(double yaw, double positivePitch) {
-        return this.setPolarComponents(yaw, positivePitch, 1);
+    public Vector3 setPolarComponents(double yawDegrees, double positivePitchDegrees) {
+        return this.setPolarComponents(yawDegrees, positivePitchDegrees, 1);
     }
 
     public Vector3 setComponents(Vector3 vector3) {
@@ -696,7 +724,11 @@ public class Vector3 implements Cloneable {
      * 转化单位向量
      */
     public Vector3 asUnitVector3() {
-        return new Vector3(x / length(), y / length(), z / length());
+        double length = length();
+        if (length == 0) {
+            return this;
+        }
+        return new Vector3(x / length, y / length, z / length);
     }
 
     public Vector3f asVector3f() {
