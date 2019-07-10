@@ -98,7 +98,6 @@ public class Vector3 implements Cloneable {
      *
      * @param deltaYawDegrees   yaw 旋转量, 角度制, 0~360
      * @param deltaPitchDegrees pitch 旋转量, 角度制, 0~180
-     *
      * @return new V3
      */
     public Vector3 rotate(double deltaYawDegrees, double deltaPitchDegrees) {
@@ -138,7 +137,6 @@ public class Vector3 implements Cloneable {
      *
      * @param deltaYaw   yaw 旋转量, 角度制, 0~360
      * @param deltaPitch pitch 旋转量, 角度制, 0~180
-     *
      * @return new V3
      */
     public Vector3 rotateSelf(double deltaYaw, double deltaPitch) {
@@ -154,7 +152,6 @@ public class Vector3 implements Cloneable {
      *
      * @param axis          轴
      * @param rotateRadians 弧度制
-     *
      * @return new V3
      */
     @SuppressWarnings("Duplicates")
@@ -171,7 +168,6 @@ public class Vector3 implements Cloneable {
      *
      * @param axis          轴
      * @param rotateRadians 弧度制
-     *
      * @return this
      */
     @SuppressWarnings("Duplicates")
@@ -180,14 +176,14 @@ public class Vector3 implements Cloneable {
         double sin = MathHelper.sin(rotateRadians);
 
         double newX = (axis.x * axis.x * (1 - cos) + cos) * this.x +
-                      (axis.x * axis.y * (1 - cos) - axis.z * sin) * this.y +
-                      (axis.x * axis.z * (1 - cos) + axis.y * sin) * this.z;
+                (axis.x * axis.y * (1 - cos) - axis.z * sin) * this.y +
+                (axis.x * axis.z * (1 - cos) + axis.y * sin) * this.z;
         double newY = (axis.x * axis.y * (1 - cos) + axis.z * sin) * this.x +
-                      (axis.y * axis.y * (1 - cos) + cos) * this.y +
-                      (axis.y * axis.z * (1 - cos) - axis.x * sin) * this.z;
+                (axis.y * axis.y * (1 - cos) + cos) * this.y +
+                (axis.y * axis.z * (1 - cos) - axis.x * sin) * this.z;
         double newZ = (axis.x * axis.z * (1 - cos) - axis.y * sin) * this.x +
-                      (axis.y * axis.z * (1 - cos) + axis.x * sin) * this.y +
-                      (axis.z * axis.z * (1 - cos) + cos) * this.z;
+                (axis.y * axis.z * (1 - cos) + axis.x * sin) * this.y +
+                (axis.z * axis.z * (1 - cos) + cos) * this.z;
         return this.setComponents(newX, newY, newZ);
     }
 
@@ -513,7 +509,6 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param x x value
-     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithXValue(Vector3 v, double x) {
@@ -537,7 +532,6 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param y y value
-     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithYValue(Vector3 v, double y) {
@@ -561,7 +555,6 @@ public class Vector3 implements Cloneable {
      *
      * @param v vector
      * @param z z value
-     *
      * @return intermediate vector
      */
     public Vector3 getIntermediateWithZValue(Vector3 v, double z) {
@@ -584,8 +577,8 @@ public class Vector3 implements Cloneable {
      */
     @SuppressWarnings("Duplicates")
     public double getYawTo(@NotNull Vector3 another) {
-        double deltaX = this.getX() - another.getX();
-        double deltaZ = this.getZ() - another.getZ();
+        double deltaX = another.getX() - this.getX();
+        double deltaZ = another.getZ() - this.getZ();
 
         if (deltaX == 0 && deltaZ == 0) {
             return 0;
@@ -605,9 +598,9 @@ public class Vector3 implements Cloneable {
      */
     @SuppressWarnings("Duplicates")
     public double getPitchTo(@NotNull Vector3 another) {
-        double deltaX = this.getX() - another.getX();
-        double deltaY = this.getY() - another.getY();
-        double deltaZ = this.getZ() - another.getZ();
+        double deltaX = another.getX() - this.getX();
+        double deltaY = another.getY() - this.getY();
+        double deltaZ = another.getZ() - this.getZ();
         return (double) Math.round(Math.toDegrees(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY))));
     }
 
@@ -617,7 +610,8 @@ public class Vector3 implements Cloneable {
     @SuppressWarnings("Duplicates")
     public double getPositivePitchTo(@NotNull Vector3 another) {
         double pitch = getPitchTo(another);
-        return pitch < 0 ? -pitch : 180 + pitch;
+        pitch %= 180;
+        return pitch < 0 ? 360 - -pitch : pitch;
     }
 
     public Vector3 setComponents(double x, double y, double z) {
@@ -633,19 +627,19 @@ public class Vector3 implements Cloneable {
      * @param yawDegrees   yawDegrees
      * @param pitchDegrees 只要是 pitch 就可以. 自动转换
      * @param length       长度
-     *
      * @return this
      */
     public Vector3 setPolarComponents(double yawDegrees, double pitchDegrees, double length) {
         yawDegrees %= 360;
-        pitchDegrees = pitchDegrees < 0 ? -pitchDegrees : 180 + pitchDegrees;
+
         pitchDegrees %= 180;
+        pitchDegrees = pitchDegrees < 0 ? 360 - -pitchDegrees : pitchDegrees;
 
         yawDegrees = Math.toRadians(yawDegrees);
         pitchDegrees = Math.toRadians(pitchDegrees);
-        this.x = length * Math.sin(yawDegrees) * Math.cos(pitchDegrees);
-        this.y = length * Math.sin(pitchDegrees);
-        this.z = length * Math.cos(yawDegrees) * Math.cos(pitchDegrees);
+        this.x = length * MathHelper.sin(yawDegrees) * MathHelper.cos(pitchDegrees);
+        this.y = length * MathHelper.sin(pitchDegrees);
+        this.z = length * MathHelper.cos(yawDegrees) * MathHelper.cos(pitchDegrees);
 
         //this.x = length * Math.cos(yawDegrees) * Math.sin(pitchDegrees);
         //this.y = length * Math.cos(pitchDegrees);
@@ -708,8 +702,8 @@ public class Vector3 implements Cloneable {
 
     public Vector3 asVector3() {
         if (this.getClass() == Vector3.class
-            || this.getClass() == Position.class
-            || this.getClass() == Location.class) {
+                || this.getClass() == Position.class
+                || this.getClass() == Location.class) {
             return this;
         }
 
