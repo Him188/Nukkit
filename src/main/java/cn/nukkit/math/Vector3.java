@@ -188,7 +188,7 @@ public class Vector3 implements Cloneable {
     }
 
     /**
-     * 得到一个与 this 垂直的向量
+     * 得到一个与 this 垂直的单位向量
      */
     public Vector3 getVerticalVector3() {
         int flag = 0x000;
@@ -213,10 +213,16 @@ public class Vector3 implements Cloneable {
             case 0x001:
                 return new Vector3(-this.y / this.x, 1, 0);
 
-            case 0x110:
             case 0x101:
+                return new Vector3(0, 0, 1);
+
+            case 0x110:
+                return new Vector3(1, 0, 0);
+
             case 0x011:
-            case 0x111://2到三个坐标值为0, 不予计算
+                return new Vector3(0, 1, 0);
+
+            case 0x111:
             default:
                 return new Vector3();
         }
