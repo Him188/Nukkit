@@ -30,9 +30,9 @@ public abstract class BaseInventory implements Inventory {
 
     protected final String title;
 
-    public final Map<Integer, Item> slots = new HashMap<>();
+    public final Map<Integer, Item> slots = new LinkedHashMap<>();
 
-    protected final Set<Player> viewers = new HashSet<>();
+    protected final Set<Player> viewers = new LinkedHashSet<>();
 
     protected InventoryHolder holder;
 
@@ -103,7 +103,20 @@ public abstract class BaseInventory implements Inventory {
 
     @Override
     public Map<Integer, Item> getContents() {
-        return new HashMap<>(this.slots);
+        return this.slots;
+    }
+
+    /**
+     * 统计背包里面存在这个物品数量
+     */
+    @Override
+    public int countItem(Item item, boolean checkNBT){
+        return this.slots.values().stream().filter(item1 -> item.equals(item1, false, checkNBT)).mapToInt(Item::getCount).sum();
+    }
+
+    @Override
+    public int countItem(Item item){
+        return this.countItem(item, true);
     }
 
     @Override

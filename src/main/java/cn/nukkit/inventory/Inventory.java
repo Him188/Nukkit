@@ -41,6 +41,10 @@ public interface Inventory {
 
     Map<Integer, Item> getContents();
 
+    int countItem(Item item, boolean checkNBT);
+
+    int countItem(Item item);
+
     void setContents(Map<Integer, Item> items);
 
     void sendContents(Player player);

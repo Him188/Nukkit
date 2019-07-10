@@ -11,6 +11,7 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityDeathEvent;
+import cn.nukkit.event.player.PlayerKillEntityEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.format.FullChunk;
@@ -179,6 +180,11 @@ public abstract class EntityLiving extends Entity {
         super.kill();
         EntityDeathEvent ev = new EntityDeathEvent(this, this.getDrops());
         this.server.getPluginManager().callEvent(ev);
+
+        if (this.lastDamageCause instanceof EntityDamageByEntityEvent
+                && ((EntityDamageByEntityEvent) this.lastDamageCause).getDamager() instanceof Player){
+            this.server.getPluginManager().callEvent(new PlayerKillEntityEvent((Player) ((EntityDamageByEntityEvent) this.lastDamageCause).getDamager(), this));
+        }
 
         if (this.level.getGameRules().getBoolean(GameRule.DO_ENTITY_DROPS)) {
             for (Item item : ev.getDrops()) {
