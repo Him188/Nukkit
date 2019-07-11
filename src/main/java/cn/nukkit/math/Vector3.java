@@ -188,9 +188,16 @@ public class Vector3 implements Cloneable {
     }
 
     /**
+     * 得到 pitch = 0 (在 y=0 平面上)的与 this 垂直的方向向量.
+     */
+    public Vector3 getXZVerticalVector3() {
+        return Vector3.ofPolarCoordinate(ORIGIN.getYawTo(this) + 90, 0);
+    }
+
+    /**
      * 得到一个与 this 垂直的单位向量
      */
-    public Vector3 getVerticalVector3() {
+    public Vector3 getRandomVerticalVector3() {
         int flag = 0x000;
         if (this.x == 0) {
             flag |= 0x100;
