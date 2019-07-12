@@ -1069,7 +1069,7 @@ public class Server {
                     }
                 }
             } catch (Exception e) {
-                log.error(this.getLanguage().translateString("nukkit.level.tickError"));
+                log.error(this.getLanguage().translateString("nukkit.level.tickError"), e);
                 e.printStackTrace();
             }
         }
