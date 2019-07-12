@@ -160,7 +160,7 @@ public class Nukkit {
 
     private static String getVersion() {
         StringBuilder version = new StringBuilder();
-        version.append("git-");
+        version.append("[mamoe.nukkit]git-");
         String commitId;
         if (GIT_INFO == null || (commitId = GIT_INFO.getProperty("git.commit.id.abbrev")) == null) {
             return version.append("null").toString();
