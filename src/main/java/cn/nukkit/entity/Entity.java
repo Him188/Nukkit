@@ -152,6 +152,8 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
 
     protected boolean isPlayer = false;
 
+    private volatile boolean initialized;
+
     public float getHeight() {
         return 0;
     }
@@ -242,6 +244,9 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             if (this.namedTag.contains("CustomNameVisible")) {
                 this.setNameTagVisible(this.namedTag.getBoolean("CustomNameVisible"));
             }
+            if(this.namedTag.contains("CustomNameAlwaysVisible")){
+                this.setNameTagAlwaysVisible(this.namedTag.getBoolean("CustomNameAlwaysVisible"));
+            }
         }
 
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_HAS_COLLISION, true);
@@ -256,6 +261,12 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         if ((chunk == null || chunk.getProvider() == null)) {
             throw new ChunkException("Invalid garbage Chunk given to Entity");
         }
+
+        if (this.initialized) {
+            // We've already initialized this entity
+            return;
+        }
+        this.initialized = true;
 
         this.isPlayer = this instanceof Player;
         this.temporalVector = new Vector3();
@@ -346,7 +357,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
     }
 
     public boolean isNameTagAlwaysVisible() {
-        return this.getDataFlag(DATA_FLAGS, DATA_FLAG_ALWAYS_SHOW_NAMETAG);
+        return this.getDataPropertyByte(DATA_ALWAYS_SHOW_NAMETAG) == 1;
     }
 
     public void setNameTag(String name) {
@@ -673,9 +684,11 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             if (!this.getNameTag().equals("")) {
                 this.namedTag.putString("CustomName", this.getNameTag());
                 this.namedTag.putBoolean("CustomNameVisible", this.isNameTagVisible());
+                this.namedTag.putBoolean("CustomNameAlwaysVisible", this.isNameTagAlwaysVisible());
             } else {
                 this.namedTag.remove("CustomName");
                 this.namedTag.remove("CustomNameVisible");
+                this.namedTag.remove("CustomNameAlwaysVisible");
             }
         }
 
@@ -1121,7 +1134,7 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
             }
             if (this.fireTicks <= 0) {
                 this.extinguish();
-            } else {
+            } else if (!this.fireProof) {
                 this.setDataFlag(DATA_FLAGS, DATA_FLAG_ONFIRE, true);
                 hasUpdate = true;
             }
@@ -1209,14 +1222,13 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
     }
 
     public void addMotion(double motionX, double motionY, double motionZ) {
-        int chunkX = this.getFloorX() >> 4;
-        int chunkZ = this.getFloorZ() >> 4;
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
-        pk.eid = this.getId();
+        pk.eid = this.id;
         pk.motionX = (float) motionX;
         pk.motionY = (float) motionY;
         pk.motionZ = (float) motionZ;
-        this.level.addChunkPacket(chunkX, chunkZ, pk);
+
+        Server.broadcastPacket(this.hasSpawned.values(), pk);
     }
 
     public Vector3 getDirectionVector() {
@@ -2119,8 +2131,8 @@ public abstract class Entity extends Location implements Metadatable, IEntity, I
         return this.getDataProperties().getFloat(id);
     }
 
-    public Item getDataPropertySlot(int id) {
-        return this.getDataProperties().getSlot(id);
+    public CompoundTag getDataPropertyNBT(int id) {
+        return this.getDataProperties().getNBT(id);
     }
 
     public Vector3 getDataPropertyPos(int id) {

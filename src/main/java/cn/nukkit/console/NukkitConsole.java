@@ -26,7 +26,9 @@ public class NukkitConsole extends SimpleTerminalConsole {
     protected void runCommand(String command) {
         if (executingCommands.get()) {
             ServerCommandEvent event = new ServerCommandEvent(server.getConsoleSender(), command);
-            server.getPluginManager().callEvent(event);
+            if (server.getPluginManager() != null) {
+                server.getPluginManager().callEvent(event);
+            }
             if (!event.isCancelled()) {
                 Server.getInstance().getScheduler().scheduleTask(() -> server.dispatchCommand(event.getSender(), event.getCommand()));
             }

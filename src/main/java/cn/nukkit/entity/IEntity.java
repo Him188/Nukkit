@@ -321,8 +321,6 @@ public interface IEntity extends Metadatable {
 
     float getDataPropertyFloat(int id);
 
-    Item getDataPropertySlot(int id);
-
     Vector3 getDataPropertyPos(int id);
 
     int getDataPropertyType(int id);
