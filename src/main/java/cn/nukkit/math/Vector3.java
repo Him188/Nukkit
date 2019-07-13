@@ -590,8 +590,11 @@ public class Vector3 implements Cloneable {
      */
     @SuppressWarnings("Duplicates")
     public double getYawTo(@NotNull Vector3 another) {
-        double deltaX = another.getX() - this.getX();
-        double deltaZ = another.getZ() - this.getZ();
+        /*double deltaX = another.getX() - this.getX();
+        double deltaZ = another.getZ() - this.getZ();*/
+
+        double deltaX = this.getX() - another.getX();
+        double deltaZ = this.getZ() - another.getZ();
 
         if (deltaX == 0 && deltaZ == 0) {
             return 0;
