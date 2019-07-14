@@ -31,14 +31,17 @@ class Vector3Test {
     }
 
     @Test
-    void rotate2() {
-        Vector3 vector3 = new Vector3(1, 1, 1);
-        //Vector3 vector3 = new Vector3(1, 1, 1);
+    boolean rotate2() {
+        Vector3 vector3 = new Vector3(1, -1, 1);
+
         System.out.println("Vector3.ORIGIN.getYawTo(vector3) = " + Vector3.ORIGIN.getYawTo(vector3));
         System.out.println("Vector3.ORIGIN.getPitchTo(vector3) = " + Vector3.ORIGIN.getPitchTo(vector3));
         //Vector3 rot = vector3.rotate(new Vector3(1, 0, 1), Math.toRadians(90));
-        Vector3 rot = vector3.rotate(180, 0);
+        Vector3 rot = vector3.rotate(90, 0);
         System.out.println(rot);
         System.out.println(vector3.dot(rot));
+
+        System.out.println(vector3.getXZVerticalVector3().dot(vector3));
+        return true;
     }
 }
