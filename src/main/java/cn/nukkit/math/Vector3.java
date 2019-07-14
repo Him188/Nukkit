@@ -590,22 +590,21 @@ public class Vector3 implements Cloneable {
      */
     @SuppressWarnings("Duplicates")
     public double getYawTo(@NotNull Vector3 another) {
-        double deltaX = another.getX() - this.getX();
-        double deltaZ = another.getZ() - this.getZ();
-
-        //double deltaX = this.getX() - another.getX();
-        //double deltaZ = this.getZ() - another.getZ();
+        double deltaX = this.getX() - another.getX();
+        double deltaZ = this.getZ() - another.getZ();
 
         if (deltaX == 0 && deltaZ == 0) {
             return 0;
         }
 
         double yaw = Math.toDegrees(Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)));
-
-        if (yaw < 0) {
-            yaw = 360d + yaw;
+        if (deltaZ > 0) {
+            yaw = -yaw + 180;
         }
 
+        if (yaw < 0) {
+            yaw = 360 + yaw;
+        }
         return yaw;
     }
 
@@ -614,15 +613,11 @@ public class Vector3 implements Cloneable {
      */
     @SuppressWarnings("Duplicates")
     public double getPitchTo(@NotNull Vector3 another) {
-        //double deltaX = another.getX() - this.getX();
-        //double deltaY = another.getY() - this.getY();
-        //double deltaZ = another.getZ() - this.getZ();
+        double deltaX = this.getX() - another.getX();
+        double deltaY = this.getY() - another.getY();
+        double deltaZ = this.getZ() - another.getZ();
 
-        double deltaX = another.getX() - this.getX();
-        double deltaY = another.getY() - this.getY();
-        double deltaZ = another.getZ() - this.getZ();
-
-        return (double) Math.round(Math.toDegrees(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY))));
+        return Math.toDegrees(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY)));
     }
 
     /**
