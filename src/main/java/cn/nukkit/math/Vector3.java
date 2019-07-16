@@ -593,11 +593,12 @@ public class Vector3 implements Cloneable {
         double deltaX = this.getX() - another.getX();
         double deltaZ = this.getZ() - another.getZ();
 
-        if (deltaX == 0 && deltaZ == 0) {
-            return 0;
+        double yaw;
+        if (deltaX == 0) {
+            yaw = 0;
+        } else {
+            yaw = Math.toDegrees(Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)));
         }
-
-        double yaw = Math.toDegrees(Math.asin(deltaX / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)));
         if (deltaZ > 0) {
             yaw = -yaw + 180;
         }
@@ -616,6 +617,9 @@ public class Vector3 implements Cloneable {
         double deltaX = this.getX() - another.getX();
         double deltaY = this.getY() - another.getY();
         double deltaZ = this.getZ() - another.getZ();
+        if (deltaY == 0) {
+            return 0;
+        }
 
         return Math.toDegrees(Math.asin(deltaY / Math.sqrt(deltaX * deltaX + deltaZ * deltaZ + deltaY * deltaY)));
     }
